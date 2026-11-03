@@ -1,13 +1,11 @@
 """
-Automated Test Suite for Streamlit UI Views and Workflow State Transitions
+Automated Test Suite for Streamlit UI Views and Passport Workflow State Transitions
 Verifies:
-1. UI style imports and CSS definitions.
-2. View function imports (dashboard, passport, scholarship).
-3. All 15 scholarship profiles selection and state logic.
-4. Credential masking function (no raw Aadhaar/bank exposed in UI).
-5. Inactive AISHE decoupled payment status.
-6. Approval gating and early exit prevention in UI workflow.
-7. Passport workflow integrity and zero regressions.
+1. UI style imports and SaaS CSS definitions.
+2. View function imports (dashboard, passport).
+3. Passport workflow session state initialization.
+4. Verification that scholarship modules and assets are NOT imported or loaded in the active app.
+5. Passport workflow integrity, non-regression, and deterministic policy benchmark.
 """
 import sys
 import unittest
@@ -19,24 +17,13 @@ sys.path.insert(0, str(ROOT_DIR))
 from src.ui.styles import SAAS_CSS, apply_saas_styles
 from src.ui.dashboard_view import render_dashboard_view
 from src.ui.passport_view import render_passport_view, init_passport_session_state
-from src.ui.scholarship_view import (
-    render_scholarship_view,
-    init_scholarship_session_state,
-    mask_sensitive_credential
-)
-from src.scholarship.scholarship_pipeline import (
-    load_scholarship_users,
-    run_scholarship_pipeline,
-    evaluate_all_scholarship_profiles
-)
-from src.scholarship.mock_scholarship_api import (
-    reset_mock_db,
-    get_mock_application_status,
-    get_mock_payment_status
-)
+from src.evaluation import load_users as load_pass_users, run_evaluation_suite
+from src.requirement_extractor import extract_requirements
+from src.main import build_or_load_rag_pipeline
+from src.mock_passport_api import execute_mock_api_call
 
 
-class TestStreamlitWorkflows(unittest.TestCase):
+class TestPassportWorkflows(unittest.TestCase):
 
     def test_css_styles_defined(self):
         """Verify SaaS stylesheet contains required classes and design tokens."""
@@ -50,88 +37,45 @@ class TestStreamlitWorkflows(unittest.TestCase):
         self.assertIn("#D97706", SAAS_CSS)  # Amber
         self.assertIn("#0F172A", SAAS_CSS)  # Navy / Slate
 
-    def test_credential_masking(self):
-        """Verify raw Aadhaar and bank details are masked for UI display."""
-        masked_aadhaar = mask_sensitive_credential("9999-0001-1111")
-        self.assertEqual(masked_aadhaar, "XXXXXXXXXX1111")
-        self.assertNotIn("9999-0001", masked_aadhaar)
+    def test_passport_session_state_init(self):
+        """Verify Passport view initialization functions exist and are callable."""
+        self.assertTrue(callable(init_passport_session_state))
+        self.assertTrue(callable(render_passport_view))
+        self.assertTrue(callable(render_dashboard_view))
 
-        masked_acct = mask_sensitive_credential("50100234567890")
-        self.assertEqual(masked_acct, "XXXXXXXXXX7890")
-        self.assertNotIn("501002", masked_acct)
+    def test_scholarship_assets_not_in_active_path(self):
+        """Verify scholarship package and view are not present in active src/."""
+        active_scholarship_dir = ROOT_DIR / "src" / "scholarship"
+        active_scholarship_view = ROOT_DIR / "src" / "ui" / "scholarship_view.py"
+        active_scholarship_reqs = ROOT_DIR / "data" / "requirements" / "scholarship"
+        active_scholarship_users = ROOT_DIR / "data" / "users" / "scholarship_users.json"
 
-        self.assertEqual(mask_sensitive_credential(None), "None")
+        self.assertFalse(active_scholarship_dir.exists(), "src/scholarship should be archived.")
+        self.assertFalse(active_scholarship_view.exists(), "src/ui/scholarship_view.py should be archived.")
+        self.assertFalse(active_scholarship_reqs.exists(), "data/requirements/scholarship should be archived.")
+        self.assertFalse(active_scholarship_users.exists(), "data/users/scholarship_users.json should be archived.")
 
-    def test_all_15_scholarship_profiles_in_ui_dataset(self):
-        """Verify all 15 synthetic profiles load and evaluate correctly."""
-        users = load_scholarship_users()
-        self.assertEqual(len(users), 15, "Should load exactly 15 synthetic scholarship profiles.")
+    def test_passport_dataset_and_users(self):
+        """Verify 10 standardized synthetic Passport profiles load correctly."""
+        p_users = load_pass_users()
+        self.assertEqual(len(p_users), 10, "Should load exactly 10 synthetic Passport profiles (U001 - U010).")
+        user_ids = [u["user_id"] for u in p_users]
+        self.assertEqual(user_ids, [f"U{i:03d}" for i in range(1, 11)])
 
-        expected = {
-            "SCH001": ("PASSED", "SUBMITTED"),
-            "SCH002": ("BLOCKED", "BLOCKED"),
-            "SCH003": ("BLOCKED", "BLOCKED"),
-            "SCH004": ("BLOCKED", "BLOCKED"),
-            "SCH005": ("BLOCKED", "BLOCKED"),
-            "SCH006": ("BLOCKED", "BLOCKED"),
-            "SCH007": ("BLOCKED", "BLOCKED"),
-            "SCH008": ("PASSED", "SUBMITTED"),
-            "SCH009": ("BLOCKED", "BLOCKED"),
-            "SCH010": ("PASSED", "SUBMITTED"),
-            "SCH011": ("BLOCKED", "BLOCKED"),
-            "SCH012": ("BLOCKED", "BLOCKED"),
-            "SCH013": ("BLOCKED", "BLOCKED"),
-            "SCH014": ("NEEDS_REVIEW", "NEEDS_REVIEW"),
-            "SCH015": ("BLOCKED", "BLOCKED"),
+    def test_passport_mock_api(self):
+        """Verify Passport mock API accepts approved payload and records correct attributes."""
+        test_payload = {
+            "address_proof": "PASSPORT_ADDRESS_PROOF_DOC",
+            "date_of_birth_proof": "PASSPORT_DOB_PROOF_DOC"
         }
-
-        results = evaluate_all_scholarship_profiles(auto_approve_passed=True)
-        for r in results:
-            uid = r["user_id"]
-            exp_pol, exp_out = expected[uid]
-            self.assertEqual(r["policy_status"], exp_pol, f"Profile {uid} policy mismatch!")
-            self.assertEqual(r["execution_outcome"], exp_out, f"Profile {uid} outcome mismatch!")
-
-    def test_ui_submission_gating(self):
-        """Verify that without user_approved=True, execution outcome is PENDING_USER_APPROVAL."""
-        users = load_scholarship_users()
-        sch001 = users[0]
-
-        # Without approval
-        res_unapproved = run_scholarship_pipeline(sch001, user_approved=False)
-        self.assertEqual(res_unapproved["policy_status"], "PASSED")
-        self.assertEqual(res_unapproved["execution_outcome"], "PENDING_USER_APPROVAL")
-        self.assertEqual(res_unapproved["submission_status"], "PENDING_APPROVAL")
-
-        # With approval
-        res_approved = run_scholarship_pipeline(sch001, user_approved=True)
-        self.assertEqual(res_approved["policy_status"], "PASSED")
-        self.assertEqual(res_approved["execution_outcome"], "SUBMITTED")
-        self.assertTrue(res_approved["application_id"].startswith("NSP-2025-CSSS-"))
-
-    def test_ui_inactive_aishe_payment_decoupling(self):
-        """Verify that inactive AISHE applicant receives SUBMITTED application and PAYMENT_PENDING payment readiness."""
-        users = load_scholarship_users()
-        sch_inactive = dict(users[0])
-        sch_inactive["aishe_status"] = "INACTIVE"
-
-        res = run_scholarship_pipeline(sch_inactive, user_approved=True)
-        self.assertEqual(res["policy_status"], "PASSED")
-        self.assertEqual(res["execution_outcome"], "SUBMITTED")
-        app_id = res["application_id"]
-
-        # Check decoupled payment status
-        pay_res = get_mock_payment_status(app_id)
-        self.assertEqual(pay_res["payment_status"], "PAYMENT_PENDING")
-        self.assertFalse(pay_res["dbt_ready"])
-        self.assertIn("INACTIVE", pay_res["hold_reason"])
+        res = execute_mock_api_call(test_payload)
+        self.assertEqual(res["status"], "success")
+        self.assertEqual(res["received_attributes_count"], 2)
+        self.assertIn("address_proof", res["received_attributes"])
+        self.assertIn("date_of_birth_proof", res["received_attributes"])
 
     def test_passport_benchmark_non_regression(self):
         """Verify Passport 10 profiles remain completely stable."""
-        from src.evaluation import load_users as load_pass_users, run_evaluation_suite
-        from src.requirement_extractor import extract_requirements
-        from src.main import build_or_load_rag_pipeline
-
         p_users = load_pass_users()
         self.assertEqual(len(p_users), 10)
 
@@ -145,6 +89,11 @@ class TestStreamlitWorkflows(unittest.TestCase):
         blocked_cnt = sum(1 for r in eval_res if not r["policy_approved"])
         self.assertEqual(passed_cnt, 8)
         self.assertEqual(blocked_cnt, 2)
+
+        # Average disclosure reduction verification
+        red_sum = sum(r["disclosure_reduction_pct"] for r in eval_res)
+        avg_red = red_sum / len(eval_res)
+        self.assertAlmostEqual(avg_red, 86.3, delta=0.5)
 
 
 if __name__ == "__main__":
