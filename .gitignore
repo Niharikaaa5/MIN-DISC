@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Environment variables
+.env
+
+# FAISS Vector Index & Cache
+*.index
+*.pkl
+.cache/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+
+# Operating System
+Thumbs.db
+Desktop.ini
+.DS_Store

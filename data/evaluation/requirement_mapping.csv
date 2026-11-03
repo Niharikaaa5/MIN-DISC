@@ -1,0 +1,4 @@
+requirement_id,requirement,status,required_attribute,condition,document_no
+R1,Proof of Present Address,mandatory,address_proof,None,1
+R2,Proof of Date of Birth,mandatory,date_of_birth_proof,None,2
+R3,Documentary proof for Non-ECR category,conditional,academic_record,Only if applicant is eligible for Non-ECR,3

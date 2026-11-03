@@ -1,0 +1,16 @@
+# LLM API
+google-genai
+
+# RAG & Embeddings
+pypdf
+sentence-transformers
+faiss-cpu
+
+# Mock API & Web
+fastapi
+uvicorn
+requests
+
+# Utilities
+python-dotenv
+pydantic

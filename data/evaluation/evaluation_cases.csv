@@ -1,0 +1,11 @@
+user_id,case_type,expected_minimum_disclosure,conditional_or_blocking_note
+U001,complete,"address_proof,date_of_birth_proof",academic_record available
+U002,missing_address_proof,date_of_birth_proof,blocked: address_proof
+U003,complete,"address_proof,date_of_birth_proof",academic_record available
+U004,complete,"address_proof,date_of_birth_proof",academic_record available
+U005,complete,"address_proof,date_of_birth_proof",academic_record available
+U006,missing_dob_proof,address_proof,blocked: date_of_birth_proof
+U007,missing_conditional_evidence,"address_proof,date_of_birth_proof",academic_record unavailable
+U008,complete,"address_proof,date_of_birth_proof",academic_record available
+U009,complete,"address_proof,date_of_birth_proof",academic_record available
+U010,complete,"address_proof,date_of_birth_proof",academic_record available

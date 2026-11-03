@@ -1,0 +1,54 @@
+{
+  "task_id": "passport_fresh_adult_normal_birth",
+  "scope": {
+    "service": "Fresh Passport",
+    "applicant_category": "Adult",
+    "case": "Ordinary Case",
+    "citizenship_basis": "Citizen of India by birth",
+    "application_type": "Normal"
+  },
+  "requirements": [
+    {
+      "id": "R1",
+      "requirement": "Proof of Present Address",
+      "document_no": 1,
+      "status": "mandatory",
+      "required_attribute": "address_proof",
+      "source": "Table 2 / Table 3"
+    },
+    {
+      "id": "R2",
+      "requirement": "Proof of Date of Birth",
+      "document_no": 2,
+      "status": "mandatory",
+      "required_attribute": "date_of_birth_proof",
+      "source": "Table 2 / Table 3"
+    },
+    {
+      "id": "R3",
+      "requirement": "Documentary proof for Non-ECR category",
+      "document_no": 3,
+      "status": "conditional",
+      "required_attribute": "academic_record",
+      "condition": "Only if applicant is eligible for Non-ECR",
+      "source": "Table 2 / Section B Column 2.15 / Table 3"
+    }
+  ],
+  "minimum_disclosure": [
+    "address_proof",
+    "date_of_birth_proof"
+  ],
+  "conditional_disclosure": [
+    "academic_record"
+  ],
+  "excluded_attributes": [
+    "phone",
+    "email",
+    "family_income",
+    "bank_account",
+    "medical_information",
+    "employment",
+    "identity_proof"
+  ],
+  "note": "Identity proof is not added to the minimum supporting-document set because the selected official source does not list it for this exact target case."
+}
