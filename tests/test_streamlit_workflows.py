@@ -75,13 +75,32 @@ class TestPassportWorkflows(unittest.TestCase):
         self.assertIn("date_of_birth_proof", res["received_attributes"])
 
     def test_passport_benchmark_non_regression(self):
-        """Verify Passport 10 profiles remain completely stable."""
+        """Verify Passport 10 profiles remain completely stable with top_k=5 verified provenance."""
         p_users = load_pass_users()
         self.assertEqual(len(p_users), 10)
 
         retriever = build_or_load_rag_pipeline()
-        chunks = retriever.retrieve("I want to apply for a fresh passport.", top_k=3)
+        chunks = retriever.retrieve("I want to apply for a fresh passport.", top_k=5)
         reqs = extract_requirements(chunks, task_name="fresh passport application")
+
+        # Verify provenance for mandatory document proofs
+        req_by_name = {r["requirement"]: r for r in reqs["requirements"]}
+        self.assertIn("Proof of Present Address", req_by_name)
+        self.assertIn("Proof of Date of Birth", req_by_name)
+
+        addr_req = req_by_name["Proof of Present Address"]
+        self.assertEqual(addr_req["source_chunk_id"], "chk_0066")
+        self.assertEqual(addr_req["source_page"], 7)
+        self.assertEqual(addr_req["provenance_status"], "verified_document_provenance")
+        self.assertTrue(addr_req["verified_grounded"])
+
+        dob_req = req_by_name["Proof of Date of Birth"]
+        self.assertEqual(dob_req["source_chunk_id"], "chk_0067")
+        self.assertEqual(dob_req["source_page"], 7)
+        self.assertEqual(dob_req["provenance_status"], "verified_document_provenance")
+        self.assertTrue(dob_req["verified_grounded"])
+
+        # Run full benchmark evaluation
         eval_res = run_evaluation_suite(reqs)
         self.assertEqual(len(eval_res), 10)
 

@@ -1,6 +1,13 @@
 """
 Module: RAG Retriever
-Queries vector store and retrieves relevant requirement chunks, prioritizing official booklet documents.
+Queries vector store and retrieves authoritative requirement chunks, prioritizing official booklet documents.
+
+OPERATIONAL SCOPE:
+This retriever is intentionally specialized and scoped to the MIN-DISC prototype domain:
+- Workflow: Fresh Passport Application
+- Scope: Adult (18+) | Ordinary Case (Citizen of India by birth) | Normal Application
+- Authority Source: Official Passport Application Instructions Booklet (CPV Division, MEA)
+- Target Evidence Sections: Table 2 (Applicant Categories & Document Nos) and Table 3 (Overall Document List)
 """
 from typing import List, Dict
 from src.embeddings import EmbeddingModel
@@ -8,7 +15,11 @@ from src.vector_store import VectorStore
 
 
 class Retriever:
-    """RAG Retriever that queries FAISS, prioritizing official instruction booklet chunks and requirement tables."""
+    """
+    RAG Retriever for Fresh Passport Applications.
+    Queries the FAISS index with domain-scoped query aspect expansion,
+    prioritizing official instruction booklet tables and document requirement sections.
+    """
 
     def __init__(self, vector_store: VectorStore, embedding_model: EmbeddingModel):
         self.vector_store = vector_store
@@ -16,8 +27,8 @@ class Retriever:
 
     def retrieve(self, query: str, top_k: int = 5) -> List[Dict]:
         """
-        Retrieves top-k relevant document chunks for user query.
-        Combines multi-aspect query vector pooling, primary source boosting,
+        Retrieves top-k relevant document chunks for the fresh passport application query.
+        Combines target-aspect query pooling, primary booklet source boosting,
         and requirement section priority scoring.
         """
         # Primary user task query

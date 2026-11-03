@@ -73,7 +73,7 @@ def demonstrate_single_user_flow(user_id: str = "U001", requires_non_ecr: bool =
 
     # Stage 2: RAG Retrieval
     retriever = build_or_load_rag_pipeline()
-    retrieved_chunks = retriever.retrieve(user_task, top_k=3)
+    retrieved_chunks = retriever.retrieve(user_task, top_k=5)
 
     print("\n--- STAGE 2: RETRIEVED AUTHORITATIVE REQUIREMENTS ---")
     for idx, c in enumerate(retrieved_chunks, 1):

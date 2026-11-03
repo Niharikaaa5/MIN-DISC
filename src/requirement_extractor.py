@@ -95,12 +95,28 @@ def resolve_requirement_provenance(item: Dict, retrieved_chunks: List[Dict]) -> 
 
 
 def attach_provenance_to_requirements(requirements: List[Dict], retrieved_chunks: List[Dict]) -> List[Dict]:
-    """Attaches source_chunk_id, source_page, and source_file provenance to each requirement item."""
+    """
+    Attaches source_chunk_id, source_page, source_file, and explicit grounding verification status to each requirement item.
+    Carefully distinguishes:
+    - Requirements verified and grounded in retrieved source documents (verified_grounded=True, provenance_status="verified_document_provenance").
+    - Form fields that require applicant information but lack verified chunk document provenance (verified_grounded=False, provenance_status="unverified_form_field").
+    - Documents lacking matching evidence in retrieved chunks (verified_grounded=False, provenance_status="unverified_document_requirement").
+    """
     for item in requirements:
         cid, page, fname = resolve_requirement_provenance(item, retrieved_chunks)
         item["source_chunk_id"] = cid
         item["source_page"] = page
         item["source_file"] = fname
+        if cid is not None:
+            item["provenance_status"] = "verified_document_provenance"
+            item["verified_grounded"] = True
+        else:
+            req_type = item.get("type", "")
+            if req_type == "application_field":
+                item["provenance_status"] = "unverified_form_field"
+            else:
+                item["provenance_status"] = "unverified_document_requirement"
+            item["verified_grounded"] = False
     return requirements
 
 

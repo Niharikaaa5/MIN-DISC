@@ -10,6 +10,9 @@ load_dotenv(BASE_DIR / ".env")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
+# Embedding Engine Config
+EMBEDDING_BACKEND = os.getenv("EMBEDDING_BACKEND", "tfidf")
+
 # Path Config
 DATA_DIR = BASE_DIR / "data"
 PASSPORT_REQUIREMENTS_DIR = DATA_DIR / "requirements" / "passport"
