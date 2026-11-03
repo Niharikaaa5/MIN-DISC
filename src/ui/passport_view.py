@@ -12,6 +12,7 @@ import streamlit as st
 import pandas as pd
 from typing import Dict, Any, List
 
+from src.repository_controller import RepositoryAccessController
 from src.llm import LLMClient
 from src.requirement_extractor import extract_requirements
 from src.attribute_matcher import match_user_attributes
@@ -89,6 +90,23 @@ def render_passport_view(retriever):
                     p_c2.markdown(f"DOB Proof: **{'✅ Present' if has_dob else '❌ Missing'}**")
                     p_c3.markdown(f"Non-ECR Proof: **{'✅ Present' if has_acad else '❌ Missing'}**")
 
+                # Simulated Personal Cloud Repository (Google Drive)
+                repo_ctrl = RepositoryAccessController()
+                user_repo_files = repo_ctrl.list_repository_files(selected_user_id)
+                with st.expander(f"📁 Personal Cloud Storage (Google Drive) — {len(user_repo_files)} Stored Documents", expanded=False):
+                    st.caption("Simulated personal cloud repository containing applicant's personal records:")
+                    drive_table = []
+                    for f in user_repo_files:
+                        drive_table.append({
+                            "File ID": f["file_id"],
+                            "Document Name": f["file_name"],
+                            "Category": f["category"],
+                            "Document Type": f["document_type"],
+                            "Issuer": f["issuer"],
+                            "Issue Date": f["issue_date"]
+                        })
+                    st.dataframe(pd.DataFrame(drive_table), use_container_width=True, hide_index=True)
+
             st.markdown("**2. Natural Language Request**")
             task_input = st.text_input(
                 "User Task Description:",
@@ -147,23 +165,37 @@ def render_passport_view(retriever):
         st.markdown("""
         <div class="stage-box">
             <div class="stage-title">
-                <span class="stage-badge">STAGE 2</span> Requirement Analysis & Disclosure Planning
+                <span class="stage-badge">STAGE 2</span> Dual-Layer Privacy Analysis & Disclosure Planning
             </div>
             <p style="font-size:0.88rem; color:#475569; margin-bottom: 0.8rem;">
-                Retrieves authoritative requirement evidence from official passport booklets (RAG), matches attributes,
-                formulates a minimum-disclosure plan, and enforces deterministic privacy policy checks. No external tool is invoked.
+                Enforces <b>Task-Aware Access Minimisation</b> over personal storage and formulates an explainable
+                <b>Minimum-Disclosure Plan</b> with deterministic policy verification. No external tool is invoked.
             </p>
         """, unsafe_allow_html=True)
 
         run_analysis = st.button("🔍 Analyze Requirements & Plan Disclosure", key="btn_run_passport_analysis", type="primary", use_container_width=True)
 
         if run_analysis:
-            with st.spinner("Retrieving authoritative evidence, matching attributes, and formulating privacy plan..."):
+            with st.spinner("Retrieving authoritative evidence, minimizing repository access, and formulating privacy plan..."):
                 try:
                     retrieved_chunks = retriever.retrieve(task_input, top_k=5)
                     llm_client = LLMClient()
                     extracted_reqs = extract_requirements(retrieved_chunks, task_name=task_input, llm_client=llm_client)
-                    matched_data = match_user_attributes(extracted_reqs, target_user)
+
+                    # Layer 1: Task-Aware Repository Access Minimisation
+                    repo_controller = RepositoryAccessController()
+                    access_res = repo_controller.retrieve_documents_for_requirements(
+                        user_id=selected_user_id,
+                        extracted_requirements=extracted_reqs,
+                        requires_non_ecr=requires_non_ecr
+                    )
+
+                    # Layer 2: User Attribute Matching and Minimum Disclosure Planning
+                    matched_data = match_user_attributes(
+                        extracted_reqs,
+                        target_user,
+                        accessed_documents=access_res["accessed_documents"]
+                    )
                     plan = create_disclosure_plan(
                         task_name="fresh passport application",
                         extracted_requirements=extracted_reqs,
@@ -171,7 +203,13 @@ def render_passport_view(retriever):
                         user_profile=target_user,
                         requires_non_ecr=requires_non_ecr
                     )
-                    policy_res = verify_privacy_policy(plan, matched_data, target_user, requires_non_ecr=requires_non_ecr)
+                    policy_res = verify_privacy_policy(
+                        plan=plan,
+                        matched_data=matched_data,
+                        user_profile=target_user,
+                        requires_non_ecr=requires_non_ecr,
+                        repository_access_log=access_res["access_decision_log"]
+                    )
 
                     st.session_state.passport_pipeline_data = {
                         "target_user": target_user,
@@ -181,6 +219,7 @@ def render_passport_view(retriever):
                         "requires_non_ecr": requires_non_ecr,
                         "retrieved_chunks": retrieved_chunks,
                         "extracted_reqs": extracted_reqs,
+                        "access_res": access_res,
                         "matched_data": matched_data,
                         "disclosure_plan": plan,
                         "policy_res": policy_res,
@@ -213,9 +252,39 @@ def render_passport_view(retriever):
             policy_res = p_data["policy_res"]
             retrieved_chunks = p_data["retrieved_chunks"]
 
-            st.markdown(f"#### Privacy Review for Applicant: **{analyzed_user['name']}** (`{analyzed_user['user_id']}`)")
+            st.markdown(f"#### 🛡️ Dual-Layer Privacy Review: **{analyzed_user['name']}** (`{analyzed_user['user_id']}`)")
 
+            # -----------------------------------------------------------------
+            # LAYER 1: TASK-AWARE ACCESS MINIMISATION
+            # -----------------------------------------------------------------
+            access_res = p_data.get("access_res", {})
+            access_metrics = access_res.get("metrics", {})
+            access_log = access_res.get("access_decision_log", [])
+
+            st.markdown("##### 📁 Layer 1: Task-Aware Access Minimisation (Personal Storage Audit)")
+            st.caption("Inspects personal file metadata to verify task relevance; sensitive documents (medical, banking, tax) remain strictly unopened.")
+
+            if access_metrics:
+                acc_c1, acc_c2, acc_c3, acc_c4 = st.columns(4)
+                acc_c1.metric("Personal Drive Files", f"{access_metrics.get('total_repository_files', 0)}")
+                acc_c2.metric("Metadata Inspected Only", f"{access_metrics.get('inspected_metadata_files', 0)}")
+                acc_c3.metric("Authorized Opened", f"{access_metrics.get('accessed_files_count', 0)}")
+                acc_c4.metric("Access Reduction Ratio", f"{access_metrics.get('access_reduction_percentage', 0.0)}%")
+
+            if access_log:
+                audit_rows = []
+                for a in access_log:
+                    audit_rows.append({
+                        "Document File": a["file_name"],
+                        "Category": a["category"],
+                        "Access Decision": "🟢 OPENED" if a["decision"] == "ACCESSED" else "🔒 NOT ACCESSED (PROTECTED)",
+                        "Policy Justification": a["justification"]
+                    })
+                st.dataframe(pd.DataFrame(audit_rows), use_container_width=True, hide_index=True)
+
+            # -----------------------------------------------------------------
             # A. Extracted Requirements
+            # -----------------------------------------------------------------
             st.markdown("##### A. Extracted Requirements & Authoritative Evidence")
             req_table_rows = []
             for req in extracted_reqs.get("requirements", []):
@@ -247,27 +316,33 @@ def render_passport_view(retriever):
                     st.text(c.get("text", ""))
                     st.markdown("---")
 
+            # -----------------------------------------------------------------
             # B. Attribute Matching
+            # -----------------------------------------------------------------
             st.markdown("##### B. Requirement to User-Attribute Matching")
             match_table_data = []
             for req_name, details in matched_data.get("mapping", {}).items():
                 val = details["value"] if details["value"] is not None else "MISSING / NULL"
+                src_tag = f"📂 Drive: {details.get('document_file')}" if details.get("accessed_from_repository") else "👤 Profile Form Field"
                 match_table_data.append({
                     "Task Requirement": req_name,
                     "Category": details.get("type", "supporting_document"),
                     "Status": details.get("status", "mandatory").upper(),
                     "Profile Attribute": str(details.get("attribute_key")),
-                    "Present in Profile": "Yes" if details.get("present_in_profile") else "Missing",
+                    "Document Origin": src_tag,
+                    "Present": "Yes" if details.get("present_in_profile") else "Missing",
                     "Attribute Value": str(val)
                 })
-            st.table(pd.DataFrame(match_table_data))
+            st.dataframe(pd.DataFrame(match_table_data), use_container_width=True, hide_index=True)
 
             missing_reqs = plan.get("missing_mandatory_attributes") or matched_data.get("missing_mandatory_attributes", [])
             if missing_reqs:
-                st.warning(f"⚠️ **Missing Mandatory Requirement(s)**: `{missing_reqs}`. Profile lacks documentary proof.")
+                st.warning(f"⚠️ **Missing Mandatory Requirement(s)**: `{missing_reqs}`. Profile lacks statutory documentary proof.")
 
-            # C. Minimum Disclosure Metrics
-            st.markdown("##### C. Minimum-Disclosure Plan & Metrics")
+            # -----------------------------------------------------------------
+            # C. Minimum Disclosure Metrics (Layer 2)
+            # -----------------------------------------------------------------
+            st.markdown("##### 📤 Layer 2: Minimum-Disclosure Plan & Metrics")
             base_count = plan["total_user_attributes_count"]
             min_count = plan["disclosed_attributes_count"] if policy_res["approved"] else 0
             prevented_count = base_count - min_count
@@ -291,7 +366,17 @@ def render_passport_view(retriever):
                 st.markdown("**Excluded to Prevent Over-Disclosure:**")
                 st.info(f"Attributes ({len(plan['excluded_attributes'])}): `{plan['excluded_attributes']}`")
 
+            with st.expander("🔍 View Per-Attribute Exclusion Justifications & Quarantined Fields", expanded=False):
+                st.markdown("**Granular Exclusion Justifications:**")
+                for attr, just in plan.get("exclusion_justifications", {}).items():
+                    st.markdown(f"- **`{attr}`**: {just}")
+                st.markdown("---")
+                st.markdown("**Quarantined Internal Document Fields (Never Transmitted):**")
+                st.caption(f"`{', '.join(plan.get('quarantined_document_fields', []))}`")
+
+            # -----------------------------------------------------------------
             # D. Policy Validation
+            # -----------------------------------------------------------------
             st.markdown("##### D. Deterministic Privacy Policy Decision")
             if policy_res["approved"]:
                 st.markdown(f"""
@@ -312,7 +397,9 @@ def render_passport_view(retriever):
                 </div>
                 """, unsafe_allow_html=True)
 
+            # -----------------------------------------------------------------
             # E. Proposed Payload
+            # -----------------------------------------------------------------
             st.markdown("##### E. Proposed Disclosure Payload Preview")
             if policy_res["approved"]:
                 st.json(plan["approved_payload"])
@@ -382,8 +469,8 @@ def render_passport_view(retriever):
     # TAB 2: BENCHMARK EVALUATION (U001 - U010)
     # =========================================================================
     with tab_bench:
-        st.subheader("📊 Full System Evaluation Benchmark (U001 - U010)")
-        st.caption("Compares Baseline (Full Profile Disclosure) vs MIN-DISC across all 10 synthetic test profiles.")
+        st.subheader("📊 Dual-Layer Privacy Benchmark (U001 - U010)")
+        st.caption("Evaluates both Layer 1 (Access Minimisation) and Layer 2 (Disclosure Minimisation) across 10 synthetic test profiles.")
 
         if st.button("Run Full Passport Benchmark Suite", key="btn_run_pass_bench", type="secondary"):
             with st.spinner("Running evaluation benchmark across all 10 profiles..."):
@@ -392,15 +479,22 @@ def render_passport_view(retriever):
                 eval_results = run_evaluation_suite(extracted_reqs)
 
                 df_rows = []
+                total_repo_files = 0
+                total_accessed_files = 0
                 total_baseline = 0
                 total_min = 0
                 total_prevented = 0
 
                 for r in eval_results:
+                    tot_f = r.get("total_repository_files", 7)
+                    acc_f = r.get("accessed_files_count", 0)
+                    acc_red = r.get("access_reduction_pct", 0.0)
                     b_disc = r["baseline_disclosed"]
                     m_disc = r["min_disc_disclosed"]
                     prevented = r["attributes_prevented"]
 
+                    total_repo_files += tot_f
+                    total_accessed_files += acc_f
                     total_baseline += b_disc
                     total_min += m_disc
                     total_prevented += prevented
@@ -408,22 +502,34 @@ def render_passport_view(retriever):
                     df_rows.append({
                         "User ID": r["user_id"],
                         "Applicant Name": r["user_name"],
-                        "Full Profile Disclosed": b_disc,
-                        "MIN-DISC Disclosed": m_disc,
+                        "Drive Files (Opened/Total)": f"{acc_f}/{tot_f}",
+                        "Access Reduction %": f"{acc_red}%",
+                        "Profile Attrs (Disclosed/Total)": f"{m_disc}/{b_disc}",
+                        "Disclosure Reduction %": f"{r['disclosure_reduction_pct']}%",
                         "Policy Check": "PASSED" if r["policy_approved"] else "BLOCKED",
-                        "Final Status": r["min_disc_status"],
-                        "Reduction %": f"{r['disclosure_reduction_pct']}%"
+                        "Final Status": "PASSED" if r["policy_approved"] else "BLOCKED"
                     })
 
-                st.dataframe(pd.DataFrame(df_rows), use_container_width=True)
+                st.dataframe(pd.DataFrame(df_rows), use_container_width=True, hide_index=True)
 
+                st.markdown("#### 📈 Benchmark Summary Metrics")
+                avg_acc_reduction = round((1 - (total_accessed_files / total_repo_files)) * 100, 1) if total_repo_files > 0 else 0
+                avg_disc_reduction = round((1 - (total_min / total_baseline)) * 100, 1) if total_baseline > 0 else 0
+
+                st.markdown("**Layer 1: Task-Aware Access Minimisation**")
                 bm1, bm2, bm3, bm4 = st.columns(4)
-                bm1.metric("Total Baseline Disclosures", total_baseline)
-                bm2.metric("Total MIN-DISC Disclosures", total_min)
-                bm3.metric("Total Attributes Excluded", total_prevented)
-                overall_pct = round((1 - (total_min / total_baseline)) * 100, 1) if total_baseline > 0 else 0
-                bm4.metric("Overall System Disclosure Reduction", f"{overall_pct}%")
+                bm1.metric("Total Drive Files", total_repo_files)
+                bm2.metric("Total Files Opened", total_accessed_files)
+                bm3.metric("Sensitive Kept Unopened", total_repo_files - total_accessed_files)
+                bm4.metric("Average Access Reduction", f"{avg_acc_reduction}%")
 
-                st.caption(f"Across the 10 synthetic evaluation cases, MIN-DISC reduced disclosed profile attributes by {overall_pct}% relative to full-profile baseline disclosure.")
+                st.markdown("**Layer 2: Minimum-Disclosure Planning**")
+                dm1, dm2, dm3, dm4 = st.columns(4)
+                dm1.metric("Baseline Attributes Disclosed", total_baseline)
+                dm2.metric("MIN-DISC Attributes Disclosed", total_min)
+                dm3.metric("Attributes Withheld", total_prevented)
+                dm4.metric("Average Disclosure Reduction", f"{avg_disc_reduction}%")
+
+                st.caption(f"Across the 10 synthetic evaluation cases, MIN-DISC kept {avg_acc_reduction}% of personal drive files unopened and reduced disclosed attributes by {avg_disc_reduction}% relative to full-profile baseline disclosure.")
         else:
             st.info("ℹ️ Click **'Run Full Passport Benchmark Suite'** to compute metrics across U001 - U010.")

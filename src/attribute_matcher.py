@@ -3,7 +3,7 @@ Module: User Attribute Matcher
 Maps extracted task requirements to specific user profile attribute keys via explicit rules.
 Respects typed requirements: application_field, supporting_document, and conditional_requirement.
 """
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 
 EXPLICIT_REQUIREMENT_MAPPINGS = {
@@ -18,7 +18,11 @@ EXPLICIT_REQUIREMENT_MAPPINGS = {
 }
 
 
-def match_user_attributes(extracted_requirements: Dict, user_profile: Dict) -> Dict:
+def match_user_attributes(
+    extracted_requirements: Dict,
+    user_profile: Dict,
+    accessed_documents: Optional[Dict[str, Any]] = None
+) -> Dict:
     """
     Maps extracted task requirements to corresponding user profile attribute keys.
     Respects requirement categories:
@@ -26,12 +30,16 @@ def match_user_attributes(extracted_requirements: Dict, user_profile: Dict) -> D
     - conditional_requirement: conditional document proofs (e.g. Non-ECR proof, Doc 41)
     - application_field: text form fields (Name, DOB, Address)
 
+    When accessed_documents from the RepositoryAccessController is provided,
+    supporting document tokens are verified against actually opened repository files.
+
     Returns:
         Dict containing:
             - mapping: Dict[str, Dict]
             - matched_attribute_keys: List[str]
             - missing_mandatory_attributes: List[str]
             - available_user_attributes: List[str]
+            - repository_verified: bool
     """
     req_list = extracted_requirements.get("requirements", [])
 
@@ -56,8 +64,46 @@ def match_user_attributes(extracted_requirements: Dict, user_profile: Dict) -> D
                     attr_key = key
                     break
 
-        attr_val = user_profile.get(attr_key) if attr_key else None
-        present_in_profile = attr_val is not None and attr_val != ""
+        doc_file = None
+        doc_file_id = None
+        accessed_from_repo = False
+
+        if accessed_documents is not None and req_type in ["supporting_document", "conditional_requirement"]:
+            # Verify against repository accessed documents
+            if attr_key == "address_proof":
+                doc = accessed_documents.get("proof_of_address")
+                if doc:
+                    attr_val = doc.get("token")
+                    doc_file = doc.get("file_name")
+                    doc_file_id = doc.get("file_id")
+                    accessed_from_repo = True
+                else:
+                    attr_val = None
+            elif attr_key == "date_of_birth_proof":
+                doc = accessed_documents.get("proof_of_date_of_birth")
+                if doc:
+                    attr_val = doc.get("token")
+                    doc_file = doc.get("file_name")
+                    doc_file_id = doc.get("file_id")
+                    accessed_from_repo = True
+                else:
+                    attr_val = None
+            elif attr_key == "academic_record":
+                doc = accessed_documents.get("proof_of_non_ecr") or accessed_documents.get("academic_certificate")
+                if doc:
+                    attr_val = doc.get("token")
+                    doc_file = doc.get("file_name")
+                    doc_file_id = doc.get("file_id")
+                    accessed_from_repo = True
+                else:
+                    attr_val = None
+            else:
+                attr_val = user_profile.get(attr_key) if attr_key else None
+        else:
+            # Fallback directly to user_profile
+            attr_val = user_profile.get(attr_key) if attr_key else None
+
+        present_in_profile = attr_val is not None and str(attr_val).strip() != ""
 
         mapping[req_name] = {
             "attribute_key": attr_key,
@@ -68,7 +114,10 @@ def match_user_attributes(extracted_requirements: Dict, user_profile: Dict) -> D
             "present_in_profile": present_in_profile,
             "value": attr_val,
             "condition": condition,
-            "document_no": doc_no
+            "document_no": doc_no,
+            "accessed_from_repository": accessed_from_repo,
+            "document_file": doc_file,
+            "document_file_id": doc_file_id
         }
 
         if attr_key and present_in_profile:
@@ -91,5 +140,6 @@ def match_user_attributes(extracted_requirements: Dict, user_profile: Dict) -> D
         "mapping": mapping,
         "matched_attribute_keys": matched_keys,
         "missing_mandatory_attributes": missing_mandatory,
-        "available_user_attributes": available_keys
+        "available_user_attributes": available_keys,
+        "repository_verified": accessed_documents is not None
     }

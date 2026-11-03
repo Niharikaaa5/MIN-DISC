@@ -1,0 +1,1855 @@
+{
+  "U001": {
+    "user_id": "U001",
+    "user_name": "Aarav Mehta",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U001_01",
+        "file_name": "Electricity_Bill_Utility_Bengaluru.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Bengaluru Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_001",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_001",
+          "consumer_name": "Aarav Mehta",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Bengaluru - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U001-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U001_02",
+        "file_name": "Birth_Certificate_Municipal_Bengaluru.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Bengaluru",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_001",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_001",
+          "child_name": "Aarav Mehta",
+          "date_of_birth": "2002-04-18",
+          "place_of_birth": "Bengaluru",
+          "registration_number": "REG-BIRTH-U001-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U001_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_001",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_001",
+          "candidate_name": "Aarav Mehta",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "2002-04-18",
+          "roll_number": "CBSE-U001-77192",
+          "school_name": "National Public School, Bengaluru",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U001_04",
+        "file_name": "Bank_Account_Statement_BANK_001.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_001",
+        "extracted_data": {
+          "account_number": "SBI-U001-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Aarav Mehta",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U001_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U001",
+        "extracted_data": {
+          "pan": "ABCDE00199K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Aarav Mehta",
+          "gross_total_income": 350000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U001_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_001.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_001",
+        "extracted_data": {
+          "patient_name": "Aarav Mehta",
+          "patient_id": "MED-PAT-U001",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U001_07",
+        "file_name": "Curriculum_Vitae_Aarav_Mehta.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Student",
+        "extracted_data": {
+          "candidate_name": "Aarav Mehta",
+          "current_role": "Student",
+          "phone": "9000000001",
+          "email": "aarav.u001@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Student at Regional Firm (Bengaluru)"
+          ]
+        }
+      }
+    ]
+  },
+  "U002": {
+    "user_id": "U002",
+    "user_name": "Diya Nair",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U002_01",
+        "file_name": "Unsigned_Rental_Agreement_Draft.txt",
+        "category": "miscellaneous",
+        "document_type": "unverified_draft",
+        "issuer": "Self Drafted",
+        "issue_date": "2024-01-10",
+        "tags": [
+          "draft",
+          "rental",
+          "unverified"
+        ],
+        "token": null,
+        "extracted_data": {
+          "document_reference": null,
+          "note": "Unsigned draft, invalid for official verification."
+        }
+      },
+      {
+        "file_id": "FILE_U002_02",
+        "file_name": "Birth_Certificate_Municipal_Mysuru.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Mysuru",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_002",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_002",
+          "child_name": "Diya Nair",
+          "date_of_birth": "2003-09-07",
+          "place_of_birth": "Mysuru",
+          "registration_number": "REG-BIRTH-U002-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U002_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_002",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_002",
+          "candidate_name": "Diya Nair",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "2003-09-07",
+          "roll_number": "CBSE-U002-77192",
+          "school_name": "National Public School, Mysuru",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U002_04",
+        "file_name": "Bank_Account_Statement_BANK_002.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_002",
+        "extracted_data": {
+          "account_number": "SBI-U002-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Diya Nair",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U002_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U002",
+        "extracted_data": {
+          "pan": "ABCDE00299K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Diya Nair",
+          "gross_total_income": 420000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U002_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_002.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_002",
+        "extracted_data": {
+          "patient_name": "Diya Nair",
+          "patient_id": "MED-PAT-U002",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U002_07",
+        "file_name": "Curriculum_Vitae_Diya_Nair.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Student",
+        "extracted_data": {
+          "candidate_name": "Diya Nair",
+          "current_role": "Student",
+          "phone": "9000000002",
+          "email": "diya.u002@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Student at Regional Firm (Mysuru)"
+          ]
+        }
+      }
+    ]
+  },
+  "U003": {
+    "user_id": "U003",
+    "user_name": "Kabir Rao",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U003_01",
+        "file_name": "Electricity_Bill_Utility_Hyderabad.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Hyderabad Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_003",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_003",
+          "consumer_name": "Kabir Rao",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Hyderabad - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U003-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U003_02",
+        "file_name": "Birth_Certificate_Municipal_Hyderabad.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Hyderabad",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_003",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_003",
+          "child_name": "Kabir Rao",
+          "date_of_birth": "2001-12-22",
+          "place_of_birth": "Hyderabad",
+          "registration_number": "REG-BIRTH-U003-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U003_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_003",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_003",
+          "candidate_name": "Kabir Rao",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "2001-12-22",
+          "roll_number": "CBSE-U003-77192",
+          "school_name": "National Public School, Hyderabad",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U003_04",
+        "file_name": "Bank_Account_Statement_BANK_003.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_003",
+        "extracted_data": {
+          "account_number": "SBI-U003-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Kabir Rao",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U003_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U003",
+        "extracted_data": {
+          "pan": "ABCDE00399K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Kabir Rao",
+          "gross_total_income": 780000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U003_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_003.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_003",
+        "extracted_data": {
+          "patient_name": "Kabir Rao",
+          "patient_id": "MED-PAT-U003",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U003_07",
+        "file_name": "Curriculum_Vitae_Kabir_Rao.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Software Intern",
+        "extracted_data": {
+          "candidate_name": "Kabir Rao",
+          "current_role": "Software Intern",
+          "phone": "9000000003",
+          "email": "kabir.u003@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Software Intern at Regional Firm (Hyderabad)"
+          ]
+        }
+      }
+    ]
+  },
+  "U004": {
+    "user_id": "U004",
+    "user_name": "Ishita Verma",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U004_01",
+        "file_name": "Electricity_Bill_Utility_Pune.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Pune Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_004",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_004",
+          "consumer_name": "Ishita Verma",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Pune - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U004-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U004_02",
+        "file_name": "Birth_Certificate_Municipal_Pune.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Pune",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_004",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_004",
+          "child_name": "Ishita Verma",
+          "date_of_birth": "1999-06-11",
+          "place_of_birth": "Pune",
+          "registration_number": "REG-BIRTH-U004-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U004_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_004",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_004",
+          "candidate_name": "Ishita Verma",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "1999-06-11",
+          "roll_number": "CBSE-U004-77192",
+          "school_name": "National Public School, Pune",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U004_04",
+        "file_name": "Bank_Account_Statement_BANK_004.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_004",
+        "extracted_data": {
+          "account_number": "SBI-U004-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Ishita Verma",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U004_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U004",
+        "extracted_data": {
+          "pan": "ABCDE00499K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Ishita Verma",
+          "gross_total_income": 920000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U004_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_004.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_004",
+        "extracted_data": {
+          "patient_name": "Ishita Verma",
+          "patient_id": "MED-PAT-U004",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U004_07",
+        "file_name": "Curriculum_Vitae_Ishita_Verma.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Engineer",
+        "extracted_data": {
+          "candidate_name": "Ishita Verma",
+          "current_role": "Engineer",
+          "phone": "9000000004",
+          "email": "ishita.u004@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Engineer at Regional Firm (Pune)"
+          ]
+        }
+      }
+    ]
+  },
+  "U005": {
+    "user_id": "U005",
+    "user_name": "Rohan Iyer",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U005_01",
+        "file_name": "Electricity_Bill_Utility_Chennai.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Chennai Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_005",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_005",
+          "consumer_name": "Rohan Iyer",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Chennai - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U005-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U005_02",
+        "file_name": "Birth_Certificate_Municipal_Chennai.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Chennai",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_005",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_005",
+          "child_name": "Rohan Iyer",
+          "date_of_birth": "2000-02-29",
+          "place_of_birth": "Chennai",
+          "registration_number": "REG-BIRTH-U005-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U005_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_005",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_005",
+          "candidate_name": "Rohan Iyer",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "2000-02-29",
+          "roll_number": "CBSE-U005-77192",
+          "school_name": "National Public School, Chennai",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U005_04",
+        "file_name": "Bank_Account_Statement_BANK_005.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_005",
+        "extracted_data": {
+          "account_number": "SBI-U005-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Rohan Iyer",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U005_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U005",
+        "extracted_data": {
+          "pan": "ABCDE00599K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Rohan Iyer",
+          "gross_total_income": 510000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U005_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_005.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_005",
+        "extracted_data": {
+          "patient_name": "Rohan Iyer",
+          "patient_id": "MED-PAT-U005",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U005_07",
+        "file_name": "Curriculum_Vitae_Rohan_Iyer.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Analyst",
+        "extracted_data": {
+          "candidate_name": "Rohan Iyer",
+          "current_role": "Analyst",
+          "phone": "9000000005",
+          "email": "rohan.u005@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Analyst at Regional Firm (Chennai)"
+          ]
+        }
+      }
+    ]
+  },
+  "U006": {
+    "user_id": "U006",
+    "user_name": "Ananya Kapoor",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U006_01",
+        "file_name": "Electricity_Bill_Utility_Delhi.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Delhi Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_006",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_006",
+          "consumer_name": "Ananya Kapoor",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Delhi - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U006-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U006_02",
+        "file_name": "Handwritten_Horoscope_Notes.pdf",
+        "category": "personal",
+        "document_type": "unverified_personal_record",
+        "issuer": "Family Record",
+        "issue_date": "2004-09-01",
+        "tags": [
+          "personal",
+          "horoscope"
+        ],
+        "token": null,
+        "extracted_data": {
+          "document_reference": null,
+          "note": "Informal family birth record; non-statutory."
+        }
+      },
+      {
+        "file_id": "FILE_U006_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_006",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_006",
+          "candidate_name": "Ananya Kapoor",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "2004-08-15",
+          "roll_number": "CBSE-U006-77192",
+          "school_name": "National Public School, Delhi",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U006_04",
+        "file_name": "Bank_Account_Statement_BANK_006.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_006",
+        "extracted_data": {
+          "account_number": "SBI-U006-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Ananya Kapoor",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U006_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U006",
+        "extracted_data": {
+          "pan": "ABCDE00699K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Ananya Kapoor",
+          "gross_total_income": 290000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U006_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_006.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_006",
+        "extracted_data": {
+          "patient_name": "Ananya Kapoor",
+          "patient_id": "MED-PAT-U006",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U006_07",
+        "file_name": "Curriculum_Vitae_Ananya_Kapoor.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Student",
+        "extracted_data": {
+          "candidate_name": "Ananya Kapoor",
+          "current_role": "Student",
+          "phone": "9000000006",
+          "email": "ananya.u006@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Student at Regional Firm (Delhi)"
+          ]
+        }
+      }
+    ]
+  },
+  "U007": {
+    "user_id": "U007",
+    "user_name": "Vikram Joshi",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U007_01",
+        "file_name": "Electricity_Bill_Utility_Ahmedabad.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Ahmedabad Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_007",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_007",
+          "consumer_name": "Vikram Joshi",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Ahmedabad - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U007-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U007_02",
+        "file_name": "Birth_Certificate_Municipal_Ahmedabad.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Ahmedabad",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_007",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_007",
+          "child_name": "Vikram Joshi",
+          "date_of_birth": "1998-11-03",
+          "place_of_birth": "Ahmedabad",
+          "registration_number": "REG-BIRTH-U007-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U007_03",
+        "file_name": "Sports_Club_Participation_Certificate.pdf",
+        "category": "extracurricular",
+        "document_type": "activity_certificate",
+        "issuer": "State Athletics Association",
+        "issue_date": "2016-11-14",
+        "tags": [
+          "sports",
+          "extracurricular"
+        ],
+        "token": null,
+        "extracted_data": {
+          "document_reference": null,
+          "note": "Athletic participation certificate; does not prove matriculation."
+        }
+      },
+      {
+        "file_id": "FILE_U007_04",
+        "file_name": "Bank_Account_Statement_BANK_007.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_007",
+        "extracted_data": {
+          "account_number": "SBI-U007-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Vikram Joshi",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U007_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U007",
+        "extracted_data": {
+          "pan": "ABCDE00799K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Vikram Joshi",
+          "gross_total_income": 640000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U007_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_007.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_007",
+        "extracted_data": {
+          "patient_name": "Vikram Joshi",
+          "patient_id": "MED-PAT-U007",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U007_07",
+        "file_name": "Curriculum_Vitae_Vikram_Joshi.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Consultant",
+        "extracted_data": {
+          "candidate_name": "Vikram Joshi",
+          "current_role": "Consultant",
+          "phone": "9000000007",
+          "email": "vikram.u007@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Consultant at Regional Firm (Ahmedabad)"
+          ]
+        }
+      }
+    ]
+  },
+  "U008": {
+    "user_id": "U008",
+    "user_name": "Meera Shah",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U008_01",
+        "file_name": "Electricity_Bill_Utility_Kochi.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Kochi Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_008",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_008",
+          "consumer_name": "Meera Shah",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Kochi - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U008-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U008_02",
+        "file_name": "Birth_Certificate_Municipal_Kochi.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Kochi",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_008",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_008",
+          "child_name": "Meera Shah",
+          "date_of_birth": "2002-01-27",
+          "place_of_birth": "Kochi",
+          "registration_number": "REG-BIRTH-U008-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U008_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_008",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_008",
+          "candidate_name": "Meera Shah",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "2002-01-27",
+          "roll_number": "CBSE-U008-77192",
+          "school_name": "National Public School, Kochi",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U008_04",
+        "file_name": "Bank_Account_Statement_BANK_008.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_008",
+        "extracted_data": {
+          "account_number": "SBI-U008-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Meera Shah",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U008_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U008",
+        "extracted_data": {
+          "pan": "ABCDE00899K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Meera Shah",
+          "gross_total_income": 470000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U008_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_008.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_008",
+        "extracted_data": {
+          "patient_name": "Meera Shah",
+          "patient_id": "MED-PAT-U008",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U008_07",
+        "file_name": "Curriculum_Vitae_Meera_Shah.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Student",
+        "extracted_data": {
+          "candidate_name": "Meera Shah",
+          "current_role": "Student",
+          "phone": "9000000008",
+          "email": "meera.u008@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Student at Regional Firm (Kochi)"
+          ]
+        }
+      }
+    ]
+  },
+  "U009": {
+    "user_id": "U009",
+    "user_name": "Aditya Sen",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U009_01",
+        "file_name": "Electricity_Bill_Utility_Kolkata.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Kolkata Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_009",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_009",
+          "consumer_name": "Aditya Sen",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Kolkata - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U009-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U009_02",
+        "file_name": "Birth_Certificate_Municipal_Kolkata.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Kolkata",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_009",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_009",
+          "child_name": "Aditya Sen",
+          "date_of_birth": "1997-05-19",
+          "place_of_birth": "Kolkata",
+          "registration_number": "REG-BIRTH-U009-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U009_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_009",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_009",
+          "candidate_name": "Aditya Sen",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "1997-05-19",
+          "roll_number": "CBSE-U009-77192",
+          "school_name": "National Public School, Kolkata",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U009_04",
+        "file_name": "Bank_Account_Statement_BANK_009.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_009",
+        "extracted_data": {
+          "account_number": "SBI-U009-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Aditya Sen",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U009_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U009",
+        "extracted_data": {
+          "pan": "ABCDE00999K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Aditya Sen",
+          "gross_total_income": 1100000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U009_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_009.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_009",
+        "extracted_data": {
+          "patient_name": "Aditya Sen",
+          "patient_id": "MED-PAT-U009",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U009_07",
+        "file_name": "Curriculum_Vitae_Aditya_Sen.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Manager",
+        "extracted_data": {
+          "candidate_name": "Aditya Sen",
+          "current_role": "Manager",
+          "phone": "9000000009",
+          "email": "aditya.u009@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Manager at Regional Firm (Kolkata)"
+          ]
+        }
+      }
+    ]
+  },
+  "U010": {
+    "user_id": "U010",
+    "user_name": "Sana Khan",
+    "storage_provider": "Simulated Google Drive",
+    "total_documents": 7,
+    "files": [
+      {
+        "file_id": "FILE_U010_01",
+        "file_name": "Electricity_Bill_Utility_Jaipur.pdf",
+        "category": "utility_bill",
+        "document_type": "proof_of_address",
+        "issuer": "Jaipur Electricity Supply Corporation",
+        "issue_date": "2024-02-15",
+        "tags": [
+          "utility",
+          "address",
+          "residence",
+          "billing"
+        ],
+        "token": "ADDRESS_DOC_010",
+        "extracted_data": {
+          "document_reference": "ADDRESS_DOC_010",
+          "consumer_name": "Sana Khan",
+          "billing_address": "Flat 102, Royal Enclave, Main Road, Jaipur - 560001",
+          "bill_month": "February 2024",
+          "consumer_id": "CONS-U010-9941"
+        }
+      },
+      {
+        "file_id": "FILE_U010_02",
+        "file_name": "Birth_Certificate_Municipal_Jaipur.pdf",
+        "category": "civil_registry",
+        "document_type": "proof_of_date_of_birth",
+        "issuer": "Municipal Corporation of Jaipur",
+        "issue_date": "2010-06-20",
+        "tags": [
+          "birth_certificate",
+          "dob",
+          "vital_records",
+          "legal"
+        ],
+        "token": "DOB_DOC_010",
+        "extracted_data": {
+          "document_reference": "DOB_DOC_010",
+          "child_name": "Sana Khan",
+          "date_of_birth": "2003-10-30",
+          "place_of_birth": "Jaipur",
+          "registration_number": "REG-BIRTH-U010-2002"
+        }
+      },
+      {
+        "file_id": "FILE_U010_03",
+        "file_name": "Class_10_CBSE_Passing_Certificate.pdf",
+        "category": "education",
+        "document_type": "academic_certificate",
+        "secondary_document_type": "proof_of_non_ecr",
+        "issuer": "Central Board of Secondary Education (CBSE)",
+        "issue_date": "2018-05-28",
+        "tags": [
+          "education",
+          "matriculation",
+          "non_ecr",
+          "class_10"
+        ],
+        "token": "ACADEMIC_DOC_010",
+        "extracted_data": {
+          "document_reference": "ACADEMIC_DOC_010",
+          "candidate_name": "Sana Khan",
+          "examination": "Secondary School Examination (Class X)",
+          "date_of_birth": "2003-10-30",
+          "roll_number": "CBSE-U010-77192",
+          "school_name": "National Public School, Jaipur",
+          "result": "PASSED"
+        }
+      },
+      {
+        "file_id": "FILE_U010_04",
+        "file_name": "Bank_Account_Statement_BANK_010.pdf",
+        "category": "financial_banking",
+        "document_type": "bank_statement",
+        "issuer": "State Bank of India",
+        "issue_date": "2024-01-31",
+        "tags": [
+          "banking",
+          "confidential",
+          "financial",
+          "transactions"
+        ],
+        "token": "BANK_010",
+        "extracted_data": {
+          "account_number": "SBI-U010-99283741",
+          "ifsc": "SBIN0001234",
+          "account_holder": "Sana Khan",
+          "closing_balance": 184500.5,
+          "recent_transactions": [
+            {
+              "date": "2024-01-10",
+              "type": "DEBIT",
+              "amount": 4500.0,
+              "desc": "Grocery Superstore"
+            },
+            {
+              "date": "2024-01-25",
+              "type": "CREDIT",
+              "amount": 42000.0,
+              "desc": "Monthly Inward Transfer"
+            }
+          ]
+        }
+      },
+      {
+        "file_id": "FILE_U010_05",
+        "file_name": "Income_Tax_Acknowledgment_AY23_24.pdf",
+        "category": "financial_tax",
+        "document_type": "income_tax_return",
+        "issuer": "Income Tax Department of India",
+        "issue_date": "2023-07-25",
+        "tags": [
+          "tax",
+          "itr",
+          "confidential",
+          "financial",
+          "income"
+        ],
+        "token": "ITR_U010",
+        "extracted_data": {
+          "pan": "ABCDE01099K",
+          "assessment_year": "2023-24",
+          "taxpayer_name": "Sana Khan",
+          "gross_total_income": 390000,
+          "tax_payable": 0
+        }
+      },
+      {
+        "file_id": "FILE_U010_06",
+        "file_name": "Health_Checkup_Summary_MEDICAL_010.pdf",
+        "category": "health_medical",
+        "document_type": "medical_health_record",
+        "issuer": "City Care Diagnostic Center",
+        "issue_date": "2023-10-18",
+        "tags": [
+          "medical",
+          "health",
+          "confidential",
+          "clinical",
+          "diagnostic"
+        ],
+        "token": "MEDICAL_010",
+        "extracted_data": {
+          "patient_name": "Sana Khan",
+          "patient_id": "MED-PAT-U010",
+          "blood_group": "O+",
+          "allergies": "Penicillin (Mild)",
+          "clinical_diagnosis": "Routine Annual Physical - All vitals within normal parameters"
+        }
+      },
+      {
+        "file_id": "FILE_U010_07",
+        "file_name": "Curriculum_Vitae_Sana_Khan.pdf",
+        "category": "employment",
+        "document_type": "curriculum_vitae",
+        "issuer": "Self / Applicant",
+        "issue_date": "2024-01-05",
+        "tags": [
+          "resume",
+          "employment",
+          "career",
+          "professional"
+        ],
+        "token": "Student",
+        "extracted_data": {
+          "candidate_name": "Sana Khan",
+          "current_role": "Student",
+          "phone": "9000000010",
+          "email": "sana.u010@example.com",
+          "skills": [
+            "Communication",
+            "Project Management",
+            "Data Analysis"
+          ],
+          "work_history": [
+            "Student at Regional Firm (Jaipur)"
+          ]
+        }
+      }
+    ]
+  }
+}

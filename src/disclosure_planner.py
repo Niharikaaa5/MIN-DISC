@@ -6,6 +6,22 @@ Enforces rule: "Data availability must never be treated as data necessity."
 from typing import Dict, List
 
 
+# Standard privacy justifications for excluding unneeded attributes
+EXCLUSION_JUSTIFICATIONS = {
+    "family_income": "Financial income data is unnecessary for identity and citizenship verification in passport applications.",
+    "bank_account": "Banking account details are not required for standard adult passport verification.",
+    "medical_information": "Medical and clinical health records are strictly confidential and unnecessary for passport issuance.",
+    "employment": "Employment information is not required for standard adult passport verification.",
+    "phone": "Phone number excluded from supporting-document payload to minimize contact exposure.",
+    "email": "Email address excluded from supporting-document payload to minimize contact exposure.",
+    "father_name": "Parental name fields are biographical metadata and not required as standalone supporting documents.",
+    "mother_name": "Parental name fields are biographical metadata and not required as standalone supporting documents.",
+    "academic_record": "Academic record excluded because Non-ECR documentary proof was not requested for this application.",
+    "address": "Residential address text is maintained in application form; excluded from document-reference payload.",
+    "date_of_birth": "Date of birth text is maintained in application form; excluded from document-reference payload."
+}
+
+
 def create_disclosure_plan(
     task_name: str,
     extracted_requirements: Dict,
@@ -22,6 +38,10 @@ def create_disclosure_plan(
     3. application_field (e.g. name, date_of_birth, address): visible in requirements for traceability,
        but NOT automatically included in supporting-document disclosure payload
 
+    Enforces separation between Document Access and Data Disclosure:
+    Extraneous fields inside opened documents (e.g. roll numbers, consumer IDs, transaction notes)
+    are quarantined and never transmitted in the external payload.
+
     Returns:
         Dict containing:
             - task: str
@@ -34,6 +54,8 @@ def create_disclosure_plan(
             - disclosed_attributes_count: int
             - unnecessary_attributes_excluded_count: int
             - justifications: Dict[str, str]
+            - exclusion_justifications: Dict[str, str]
+            - quarantined_document_fields: List[str]
             - matched_requirements: Dict
     """
     mapping = matched_data.get("mapping", {})
@@ -83,6 +105,21 @@ def create_disclosure_plan(
     profile_keys = [k for k, v in user_profile.items() if v is not None and k not in ["user_id", "name"]]
     excluded_attributes = [k for k in profile_keys if k not in approved_attributes]
 
+    # Explainable exclusion justifications
+    exclusion_justifications = {}
+    for attr in excluded_attributes:
+        exclusion_justifications[attr] = EXCLUSION_JUSTIFICATIONS.get(
+            attr,
+            f"Attribute '{attr}' is not an authorized or necessary supporting document for this passport task."
+        )
+
+    # Document fields quarantined from opened files to preserve access vs disclosure boundary
+    quarantined_fields = [
+        "roll_number", "school_name", "consumer_id", "billing_address",
+        "place_of_birth", "registration_number", "closing_balance",
+        "recent_transactions", "blood_group", "allergies"
+    ]
+
     return {
         "task": task_name,
         "approved_payload": approved_payload,
@@ -94,5 +131,7 @@ def create_disclosure_plan(
         "disclosed_attributes_count": len(approved_attributes),
         "unnecessary_attributes_excluded_count": len(excluded_attributes),
         "justifications": justifications,
+        "exclusion_justifications": exclusion_justifications,
+        "quarantined_document_fields": quarantined_fields,
         "matched_requirements": mapping
     }

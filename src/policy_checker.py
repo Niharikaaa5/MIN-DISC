@@ -11,12 +11,15 @@ def verify_privacy_policy(
     matched_data: Dict,
     user_profile: Dict,
     requires_non_ecr: Optional[bool] = None,
-    task_context: Optional[Dict] = None
+    task_context: Optional[Dict] = None,
+    repository_access_log: Optional[List[Dict]] = None
 ) -> Dict:
     """
     Deterministically evaluates the minimum-disclosure plan against privacy policy rules.
 
     Policy Rules Enforced:
+    0. Repository Access Compliance: Asserts zero unauthorized access attempts and verifies
+       that forbidden sensitive file categories (health, banking, tax) were never accessed.
     1. Mandatory requirement completeness: missing_mandatory_attributes must be empty.
     1B. Independent Conditional Requirement Validation (Non-ECR):
         - When requires_non_ecr=True: academic_record must be present in approved_payload, non-null, and non-empty.
@@ -47,6 +50,12 @@ def verify_privacy_policy(
         else:
             requires_non_ecr = False
 
+    if repository_access_log is None:
+        if task_context and "repository_access_log" in task_context:
+            repository_access_log = task_context["repository_access_log"]
+        elif isinstance(plan, dict) and "repository_access_log" in plan:
+            repository_access_log = plan["repository_access_log"]
+
     missing_mandatory = plan.get("missing_mandatory_attributes")
     if missing_mandatory is None:
         missing_mandatory = matched_data.get("missing_mandatory_attributes", [])
@@ -56,6 +65,28 @@ def verify_privacy_policy(
     excluded_attributes = plan.get("excluded_attributes", [])
 
     all_profile_keys = list(user_profile.keys()) if user_profile else excluded_attributes
+
+    # RULE 0 — Repository Access Policy Verification (if repository access log is provided)
+    if repository_access_log:
+        for entry in repository_access_log:
+            if entry.get("action") == "BLOCKED_ACCESS_ATTEMPT" or entry.get("status") == "BLOCKED":
+                return {
+                    "approved": False,
+                    "status": "BLOCKED",
+                    "approved_attributes": [],
+                    "rejected_attributes": all_profile_keys,
+                    "reason": f"Execution BLOCKED: Repository access violation detected ({entry.get('reason', 'Unauthorized access attempt')})."
+                }
+            is_opened = entry.get("opened", False) or entry.get("action") == "AUTHORIZED_FETCH" or entry.get("decision") == "ACCESSED"
+            cat = entry.get("category", "")
+            if is_opened and cat in {"health_medical", "financial_banking", "financial_tax"}:
+                return {
+                    "approved": False,
+                    "status": "BLOCKED",
+                    "approved_attributes": [],
+                    "rejected_attributes": all_profile_keys,
+                    "reason": f"Execution BLOCKED: Access violation detected - sensitive file category '{cat}' was opened."
+                }
 
     # RULE 1 — Mandatory requirement completeness check
     if missing_mandatory:

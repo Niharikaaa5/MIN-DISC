@@ -17,6 +17,7 @@ EMBEDDING_BACKEND = os.getenv("EMBEDDING_BACKEND", "tfidf")
 DATA_DIR = BASE_DIR / "data"
 PASSPORT_REQUIREMENTS_DIR = DATA_DIR / "requirements" / "passport"
 USERS_FILE = DATA_DIR / "users" / "users.json"
+USER_REPOSITORIES_FILE = DATA_DIR / "users" / "user_repositories.json"
 EVALUATION_DIR = DATA_DIR / "evaluation"
 FAISS_INDEX_PATH = DATA_DIR / "faiss_index.bin"
 METADATA_STORE_PATH = DATA_DIR / "chunks_metadata.json"
@@ -38,6 +39,7 @@ def check_config_health() -> dict:
         "base_dir": str(BASE_DIR),
         "passport_pdf_dir_exists": PASSPORT_REQUIREMENTS_DIR.exists(),
         "users_file_exists": USERS_FILE.exists(),
+        "user_repositories_exists": USER_REPOSITORIES_FILE.exists(),
         "ground_truth_exists": GROUND_TRUTH_PATH.exists(),
         "evaluation_cases_exists": EVALUATION_CASES_PATH.exists(),
         "has_gemini_key": bool(GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_api_key_here")
