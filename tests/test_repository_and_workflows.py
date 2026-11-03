@@ -62,8 +62,8 @@ class TestRepositoryAndAccessMinimisation(unittest.TestCase):
                 self.assertFalse(entry["opened"])
                 self.assertEqual(entry["status"], "PROTECTED_SENSITIVE")
 
-    def test_03_unauthorized_access_attempt_blocked(self):
-        """Test 3: Direct attempt to fetch sensitive medical document raises AccessDeniedError."""
+    def test_03_unauthorized_access_attempt_blocked_and_passes_policy(self):
+        """Test 3: Direct attempt to fetch sensitive medical document is blocked and logged; policy check passes when breach is prevented."""
         ctrl = RepositoryAccessController()
         with self.assertRaises(AccessDeniedError):
             ctrl.fetch_document_content("U001", "FILE_U001_06", requirement_id="proof_of_address")
@@ -72,6 +72,75 @@ class TestRepositoryAndAccessMinimisation(unittest.TestCase):
         self.assertTrue(any(log["action"] == "BLOCKED_ACCESS_ATTEMPT" for log in ctrl.access_log))
         blocked_log = next(log for log in ctrl.access_log if log["action"] == "BLOCKED_ACCESS_ATTEMPT")
         self.assertEqual(blocked_log["category"], "health_medical")
+        self.assertEqual(blocked_log["status"], "BLOCKED")
+
+        # Verify that policy check PASSES when the attempt was blocked (controller defended boundary)
+        res = self.repo_ctrl.retrieve_documents_for_requirements("U001", self.extracted_reqs, requires_non_ecr=False)
+        matched = match_user_attributes(self.extracted_reqs, self.user_dict["U001"], accessed_documents=res["accessed_documents"])
+        plan = create_disclosure_plan("fresh passport application", self.extracted_reqs, matched, self.user_dict["U001"])
+        
+        # Audit log including the blocked attempt
+        combined_audit_log = res["access_decision_log"] + [blocked_log]
+        pol_res = verify_privacy_policy(plan, matched, self.user_dict["U001"], repository_access_log=combined_audit_log)
+        self.assertTrue(pol_res["approved"])
+        self.assertEqual(pol_res["status"], "PASSED")
+
+    def test_03b_unauthorized_access_breach_fails_policy(self):
+        """Test 3B: If an unauthorized or forbidden document is successfully opened/fetched, policy check fails."""
+        res = self.repo_ctrl.retrieve_documents_for_requirements("U001", self.extracted_reqs, requires_non_ecr=False)
+        matched = match_user_attributes(self.extracted_reqs, self.user_dict["U001"], accessed_documents=res["accessed_documents"])
+        plan = create_disclosure_plan("fresh passport application", self.extracted_reqs, matched, self.user_dict["U001"])
+
+        # Scenario 1: Forbidden sensitive category (medical) was opened
+        breached_log_sensitive = [
+            {
+                "file_id": "FILE_U001_06",
+                "file_name": "Health_Checkup_Summary.pdf",
+                "category": "health_medical",
+                "document_type": "medical_health_record",
+                "decision": "ACCESSED",
+                "opened": True,
+                "justification": "Simulated breach: sensitive document opened."
+            }
+        ]
+        pol_fail_1 = verify_privacy_policy(plan, matched, self.user_dict["U001"], repository_access_log=breached_log_sensitive)
+        self.assertFalse(pol_fail_1["approved"])
+        self.assertEqual(pol_fail_1["status"], "BLOCKED")
+        self.assertIn("sensitive file category 'health_medical' was opened", pol_fail_1["reason"])
+
+        # Scenario 2: Unauthorised document type (employment) was opened
+        breached_log_unauthorized_type = [
+            {
+                "file_id": "FILE_U001_07",
+                "file_name": "Curriculum_Vitae.pdf",
+                "category": "employment",
+                "document_type": "curriculum_vitae",
+                "decision": "ACCESSED",
+                "opened": True,
+                "justification": "Simulated breach: unauthorized document type opened."
+            }
+        ]
+        pol_fail_2 = verify_privacy_policy(plan, matched, self.user_dict["U001"], repository_access_log=breached_log_unauthorized_type)
+        self.assertFalse(pol_fail_2["approved"])
+        self.assertEqual(pol_fail_2["status"], "BLOCKED")
+        self.assertIn("unauthorised document type 'curriculum_vitae' was opened", pol_fail_2["reason"])
+
+        # Scenario 3: Non-ECR document opened without Non-ECR requirement
+        breached_log_non_ecr = [
+            {
+                "file_id": "FILE_U001_03",
+                "file_name": "Class_10_Certificate.pdf",
+                "category": "education",
+                "document_type": "academic_certificate",
+                "decision": "ACCESSED",
+                "opened": True,
+                "justification": "Simulated breach: opened without requirement."
+            }
+        ]
+        pol_fail_3 = verify_privacy_policy(plan, matched, self.user_dict["U001"], requires_non_ecr=False, repository_access_log=breached_log_non_ecr)
+        self.assertFalse(pol_fail_3["approved"])
+        self.assertEqual(pol_fail_3["status"], "BLOCKED")
+        self.assertIn("Non-ECR academic document was opened when Non-ECR status was not requested", pol_fail_3["reason"])
 
     def test_04_missing_document_handling(self):
         """Test 4: Missing address proof (U002) and DOB proof (U006) trigger missing status and block policy."""

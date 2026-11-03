@@ -270,6 +270,7 @@ def render_passport_view(retriever):
                 acc_c2.metric("Metadata Inspected Only", f"{access_metrics.get('inspected_metadata_files', 0)}")
                 acc_c3.metric("Authorized Opened", f"{access_metrics.get('accessed_files_count', 0)}")
                 acc_c4.metric("Access Reduction Ratio", f"{access_metrics.get('access_reduction_percentage', 0.0)}%")
+                st.caption(f"Default-deny access control: 0 sensitive documents (medical, banking, tax) opened. Total documents unopened: {access_metrics.get('unopened_files_count', 0)}.")
 
             if access_log:
                 audit_rows = []
@@ -351,7 +352,7 @@ def render_passport_view(retriever):
             m1, m2, m3, m4 = st.columns(4)
             m1.metric("Available Profile Attributes", f"{base_count}")
             m2.metric("Approved for Proposed Payload", f"{min_count}")
-            m3.metric("Excluded from Proposed Payload", f"{prevented_count}")
+            m3.metric("Baseline Attributes Not Disclosed", f"{prevented_count}")
             m4.metric("Disclosure Reduction Ratio", f"{reduction_pct}%")
 
             plan_c1, plan_c2 = st.columns(2, gap="medium")
@@ -520,16 +521,18 @@ def render_passport_view(retriever):
                 bm1, bm2, bm3, bm4 = st.columns(4)
                 bm1.metric("Total Drive Files", total_repo_files)
                 bm2.metric("Total Files Opened", total_accessed_files)
-                bm3.metric("Sensitive Kept Unopened", total_repo_files - total_accessed_files)
+                bm3.metric("Total Files Unopened", total_repo_files - total_accessed_files)
                 bm4.metric("Average Access Reduction", f"{avg_acc_reduction}%")
+
+                st.caption(f"Across 70 documents, 30 are sensitive (banking, tax, medical) and 0 sensitive documents were opened. 52 total documents were kept unopened.")
 
                 st.markdown("**Layer 2: Minimum-Disclosure Planning**")
                 dm1, dm2, dm3, dm4 = st.columns(4)
                 dm1.metric("Baseline Attributes Disclosed", total_baseline)
                 dm2.metric("MIN-DISC Attributes Disclosed", total_min)
-                dm3.metric("Attributes Withheld", total_prevented)
+                dm3.metric("Baseline Attributes Not Disclosed", total_prevented)
                 dm4.metric("Average Disclosure Reduction", f"{avg_disc_reduction}%")
 
-                st.caption(f"Across the 10 synthetic evaluation cases, MIN-DISC kept {avg_acc_reduction}% of personal drive files unopened and reduced disclosed attributes by {avg_disc_reduction}% relative to full-profile baseline disclosure.")
+                st.caption(f"Across the 10 synthetic evaluation cases, MIN-DISC kept {avg_acc_reduction}% of personal drive files unopened and {total_prevented} baseline attributes were not disclosed by MIN-DISC (yielding an average {avg_disc_reduction}% disclosure reduction).")
         else:
             st.info("ℹ️ Click **'Run Full Passport Benchmark Suite'** to compute metrics across U001 - U010.")

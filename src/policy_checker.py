@@ -18,8 +18,10 @@ def verify_privacy_policy(
     Deterministically evaluates the minimum-disclosure plan against privacy policy rules.
 
     Policy Rules Enforced:
-    0. Repository Access Compliance: Asserts zero unauthorized access attempts and verifies
-       that forbidden sensitive file categories (health, banking, tax) were never accessed.
+    0. Repository Access Compliance: Verifies that no forbidden sensitive file categories
+       (health, banking, tax) or unauthorized document types were opened or fetched.
+       Blocked access attempts are logged for auditing but do not fail the policy if the
+       controller successfully prevented disclosure.
     1. Mandatory requirement completeness: missing_mandatory_attributes must be empty.
     1B. Independent Conditional Requirement Validation (Non-ECR):
         - When requires_non_ecr=True: academic_record must be present in approved_payload, non-null, and non-empty.
@@ -66,26 +68,66 @@ def verify_privacy_policy(
 
     all_profile_keys = list(user_profile.keys()) if user_profile else excluded_attributes
 
+    # Document types and categories for access validation
+    ALLOWED_ACCESS_DOC_TYPES = {
+        "proof_of_address",
+        "proof_of_date_of_birth",
+        "proof_of_non_ecr",
+        "academic_certificate"
+    }
+    FORBIDDEN_CATEGORIES = {
+        "health_medical",
+        "financial_banking",
+        "financial_tax"
+    }
+
     # RULE 0 — Repository Access Policy Verification (if repository access log is provided)
     if repository_access_log:
         for entry in repository_access_log:
-            if entry.get("action") == "BLOCKED_ACCESS_ATTEMPT" or entry.get("status") == "BLOCKED":
-                return {
-                    "approved": False,
-                    "status": "BLOCKED",
-                    "approved_attributes": [],
-                    "rejected_attributes": all_profile_keys,
-                    "reason": f"Execution BLOCKED: Repository access violation detected ({entry.get('reason', 'Unauthorized access attempt')})."
-                }
-            is_opened = entry.get("opened", False) or entry.get("action") == "AUTHORIZED_FETCH" or entry.get("decision") == "ACCESSED"
+            # Check if document contents were actually opened or successfully fetched
+            is_opened = (
+                entry.get("opened", False)
+                or entry.get("action") == "AUTHORIZED_FETCH"
+                or entry.get("decision") == "ACCESSED"
+            )
+
+            # Blocked access attempts are audited but pass the policy because the
+            # default-deny controller successfully prevented document contents from being read.
+            if not is_opened:
+                continue
+
+            # The policy FAILS if:
+            # 1. A forbidden sensitive document was successfully opened
             cat = entry.get("category", "")
-            if is_opened and cat in {"health_medical", "financial_banking", "financial_tax"}:
+            if cat in FORBIDDEN_CATEGORIES:
                 return {
                     "approved": False,
                     "status": "BLOCKED",
                     "approved_attributes": [],
                     "rejected_attributes": all_profile_keys,
                     "reason": f"Execution BLOCKED: Access violation detected - sensitive file category '{cat}' was opened."
+                }
+
+            # 2. An unauthorised document fetch returns document contents / violates allowlist
+            doc_type = entry.get("document_type", "")
+            sec_doc_type = entry.get("secondary_document_type", "")
+            if doc_type not in ALLOWED_ACCESS_DOC_TYPES and sec_doc_type not in ALLOWED_ACCESS_DOC_TYPES:
+                return {
+                    "approved": False,
+                    "status": "BLOCKED",
+                    "approved_attributes": [],
+                    "rejected_attributes": all_profile_keys,
+                    "reason": f"Execution BLOCKED: Access violation detected - unauthorised document type '{doc_type}' was opened."
+                }
+
+            # 3. Conditional access violation: Non-ECR document opened without Non-ECR requirement
+            if (doc_type in ["academic_certificate", "activity_certificate"] or sec_doc_type == "proof_of_non_ecr") and not requires_non_ecr:
+                return {
+                    "approved": False,
+                    "status": "BLOCKED",
+                    "approved_attributes": [],
+                    "rejected_attributes": all_profile_keys,
+                    "reason": "Execution BLOCKED: Access violation detected - Non-ECR academic document was opened when Non-ECR status was not requested."
                 }
 
     # RULE 1 — Mandatory requirement completeness check
