@@ -1,12 +1,17 @@
 """
 Module: MIN-DISC Fresh Passport Application Workflow View
-Provides the dedicated UI for the Fresh Passport Application domain:
-- Applicant profile selection (U001 - U010).
-- Isolated Passport RAG retrieval & requirement extraction.
-- Attribute matching & minimum-disclosure planning.
-- Deterministic policy verification.
-- Human-in-the-loop approval gating & mock passport submission.
-- Full 10-profile empirical evaluation benchmark.
+Provides the dedicated UI for the Fresh Passport Application domain structured
+into 10 academic demonstration steps:
+1. Select synthetic applicant (U001 - U010).
+2. Display relevant Passport requirements (retrieved from RAG).
+3. Show applicant documents and metadata (simulated repository).
+4. Show which documents were accessed and why (access decision log).
+5. Show attribute matching.
+6. Show minimum-disclosure plan (approved vs excluded attributes).
+7. Show policy verification (Passed/Blocked).
+8. Require user approval (human gating).
+9. Demonstrate mock API submission.
+10. Show evaluation results (10 synthetic profiles, access reduction, disclosure reduction).
 """
 import streamlit as st
 import pandas as pd
@@ -53,13 +58,13 @@ def render_passport_view(retriever):
     tab_app, tab_bench = st.tabs(["🚀 Application & Privacy Pipeline", "📊 Benchmark Evaluation (U001 - U010)"])
 
     with tab_app:
-        # ---------------------------------------------------------------------
-        # STAGE 1: REQUEST CONFIGURATION
-        # ---------------------------------------------------------------------
+        # =====================================================================
+        # STEP 1: SELECT SYNTHETIC APPLICANT (U001 - U010) & CONFIGURE REQUEST
+        # =====================================================================
         st.markdown("""
         <div class="stage-box">
             <div class="stage-title">
-                <span class="stage-badge">STAGE 1</span> Applicant Selection & Request Configuration
+                <span class="stage-badge">STEP 1</span> Select Synthetic Applicant & Request Parameters
             </div>
         """, unsafe_allow_html=True)
 
@@ -89,23 +94,6 @@ def render_passport_view(retriever):
                     p_c1.markdown(f"Address Proof: **{'✅ Present' if has_addr else '❌ Missing'}**")
                     p_c2.markdown(f"DOB Proof: **{'✅ Present' if has_dob else '❌ Missing'}**")
                     p_c3.markdown(f"Non-ECR Proof: **{'✅ Present' if has_acad else '❌ Missing'}**")
-
-                # Simulated Personal Cloud Repository (Google Drive)
-                repo_ctrl = RepositoryAccessController()
-                user_repo_files = repo_ctrl.list_repository_files(selected_user_id)
-                with st.expander(f"📁 Personal Cloud Storage (Google Drive) — {len(user_repo_files)} Stored Documents", expanded=False):
-                    st.caption("Simulated personal cloud repository containing applicant's personal records:")
-                    drive_table = []
-                    for f in user_repo_files:
-                        drive_table.append({
-                            "File ID": f["file_id"],
-                            "Document Name": f["file_name"],
-                            "Category": f["category"],
-                            "Document Type": f["document_type"],
-                            "Issuer": f["issuer"],
-                            "Issue Date": f["issue_date"]
-                        })
-                    st.dataframe(pd.DataFrame(drive_table), use_container_width=True, hide_index=True)
 
             st.markdown("**2. Natural Language Request**")
             task_input = st.text_input(
@@ -143,7 +131,7 @@ def render_passport_view(retriever):
             )
             st.caption("When enabled, documentary proof of Non-ECR eligibility (academic record) becomes a required supporting document.")
 
-        st.markdown("</div>", unsafe_allow_html=True)
+        run_analysis = st.button("🔍 Analyze Requirements & Plan Disclosure", key="btn_run_passport_analysis", type="primary", use_container_width=True)
 
         current_config = {
             "user_id": selected_user_id,
@@ -158,22 +146,6 @@ def render_passport_view(retriever):
             and st.session_state.passport_analyzed_config is not None
             and st.session_state.passport_analyzed_config != current_config
         )
-
-        # ---------------------------------------------------------------------
-        # STAGE 2: ANALYSIS & PRIVACY REVIEW TRIGGER
-        # ---------------------------------------------------------------------
-        st.markdown("""
-        <div class="stage-box">
-            <div class="stage-title">
-                <span class="stage-badge">STAGE 2</span> Dual-Layer Privacy Analysis & Disclosure Planning
-            </div>
-            <p style="font-size:0.88rem; color:#475569; margin-bottom: 0.8rem;">
-                Enforces <b>Task-Aware Access Minimisation</b> over personal storage and formulates an explainable
-                <b>Minimum-Disclosure Plan</b> with deterministic policy verification. No external tool is invoked.
-            </p>
-        """, unsafe_allow_html=True)
-
-        run_analysis = st.button("🔍 Analyze Requirements & Plan Disclosure", key="btn_run_passport_analysis", type="primary", use_container_width=True)
 
         if run_analysis:
             with st.spinner("Retrieving authoritative evidence, minimizing repository access, and formulating privacy plan..."):
@@ -211,6 +183,9 @@ def render_passport_view(retriever):
                         repository_access_log=access_res["access_decision_log"]
                     )
 
+                    # Inspect repository metadata for display in Step 3
+                    user_repo_files = repo_controller.list_repository_files(selected_user_id)
+
                     st.session_state.passport_pipeline_data = {
                         "target_user": target_user,
                         "task_input": task_input,
@@ -223,6 +198,7 @@ def render_passport_view(retriever):
                         "matched_data": matched_data,
                         "disclosure_plan": plan,
                         "policy_res": policy_res,
+                        "user_repo_files": user_repo_files,
                     }
                     st.session_state.passport_analyzed_config = current_config
                     st.session_state.passport_analysis_done = True
@@ -236,7 +212,7 @@ def render_passport_view(retriever):
         st.markdown("</div>", unsafe_allow_html=True)
 
         # ---------------------------------------------------------------------
-        # STAGE 2 RESULTS
+        # STEPS 2 TO 9: EXECUTION AND PRIVACY REVIEW RESULTS
         # ---------------------------------------------------------------------
         if not st.session_state.passport_analysis_done or st.session_state.passport_pipeline_data is None:
             st.info("ℹ️ Select an applicant profile above and click **'Analyze Requirements & Plan Disclosure'** to run the pipeline.")
@@ -251,42 +227,22 @@ def render_passport_view(retriever):
             plan = p_data["disclosure_plan"]
             policy_res = p_data["policy_res"]
             retrieved_chunks = p_data["retrieved_chunks"]
-
-            st.markdown(f"#### 🛡️ Dual-Layer Privacy Review: **{analyzed_user['name']}** (`{analyzed_user['user_id']}`)")
-
-            # -----------------------------------------------------------------
-            # LAYER 1: TASK-AWARE ACCESS MINIMISATION
-            # -----------------------------------------------------------------
             access_res = p_data.get("access_res", {})
             access_metrics = access_res.get("metrics", {})
             access_log = access_res.get("access_decision_log", [])
+            user_repo_files = p_data.get("user_repo_files", [])
 
-            st.markdown("##### 📁 Layer 1: Task-Aware Access Minimisation (Personal Storage Audit)")
-            st.caption("Inspects personal file metadata to verify task relevance; sensitive documents (medical, banking, tax) remain strictly unopened.")
+            # =================================================================
+            # STEP 2: DISPLAY RELEVANT PASSPORT REQUIREMENTS (RETRIEVED FROM RAG)
+            # =================================================================
+            st.markdown("""
+            <div class="stage-box">
+                <div class="stage-title">
+                    <span class="stage-badge">STEP 2</span> Relevant Passport Requirements (Retrieved from RAG)
+                </div>
+            """, unsafe_allow_html=True)
+            st.caption("Extracted from official Ministry of External Affairs Passport booklets via isolated vector retrieval:")
 
-            if access_metrics:
-                acc_c1, acc_c2, acc_c3, acc_c4 = st.columns(4)
-                acc_c1.metric("Personal Drive Files", f"{access_metrics.get('total_repository_files', 0)}")
-                acc_c2.metric("Metadata Inspected Only", f"{access_metrics.get('inspected_metadata_files', 0)}")
-                acc_c3.metric("Authorized Opened", f"{access_metrics.get('accessed_files_count', 0)}")
-                acc_c4.metric("Access Reduction Ratio", f"{access_metrics.get('access_reduction_percentage', 0.0)}%")
-                st.caption(f"Default-deny access control: 0 sensitive documents (medical, banking, tax) opened. Total documents unopened: {access_metrics.get('unopened_files_count', 0)}.")
-
-            if access_log:
-                audit_rows = []
-                for a in access_log:
-                    audit_rows.append({
-                        "Document File": a["file_name"],
-                        "Category": a["category"],
-                        "Access Decision": "🟢 OPENED" if a["decision"] == "ACCESSED" else "🔒 NOT ACCESSED (PROTECTED)",
-                        "Policy Justification": a["justification"]
-                    })
-                st.dataframe(pd.DataFrame(audit_rows), use_container_width=True, hide_index=True)
-
-            # -----------------------------------------------------------------
-            # A. Extracted Requirements
-            # -----------------------------------------------------------------
-            st.markdown("##### A. Extracted Requirements & Authoritative Evidence")
             req_table_rows = []
             for req in extracted_reqs.get("requirements", []):
                 req_type = req.get("type", "supporting_document")
@@ -310,17 +266,86 @@ def render_passport_view(retriever):
 
             st.dataframe(pd.DataFrame(req_table_rows), use_container_width=True, hide_index=True)
 
-            with st.expander("📄 View Authoritative Retrieval Excerpts", expanded=False):
+            with st.expander("📄 View Authoritative Retrieval Excerpts & Citations", expanded=False):
                 for idx, c in enumerate(retrieved_chunks, 1):
                     tag = "📘 Primary Instruction Booklet" if c.get("is_primary") else "📄 Supporting Document"
                     st.markdown(f"**Chunk #{idx}** (`{c.get('chunk_id')}`) — `{c.get('file_name')}` (Page {c.get('page_number')}) — {tag}")
                     st.text(c.get("text", ""))
                     st.markdown("---")
 
-            # -----------------------------------------------------------------
-            # B. Attribute Matching
-            # -----------------------------------------------------------------
-            st.markdown("##### B. Requirement to User-Attribute Matching")
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            # =================================================================
+            # STEP 3: SHOW APPLICANT DOCUMENTS & METADATA (SIMULATED REPOSITORY)
+            # =================================================================
+            st.markdown(f"""
+            <div class="stage-box">
+                <div class="stage-title">
+                    <span class="stage-badge">STEP 3</span> Applicant Documents & Metadata (Personal Cloud Repository)
+                </div>
+            """, unsafe_allow_html=True)
+            st.caption(f"Simulated Google Drive repository for **{analyzed_user['name']}** ({analyzed_user['user_id']}) containing {len(user_repo_files)} personal files:")
+
+            drive_table = []
+            for f in user_repo_files:
+                drive_table.append({
+                    "File ID": f["file_id"],
+                    "Document Name": f["file_name"],
+                    "Category": f["category"],
+                    "Document Type": f["document_type"],
+                    "Issuer": f["issuer"],
+                    "Issue Date": f["issue_date"]
+                })
+
+            with st.expander(f"📁 View Repository Metadata Catalog ({len(user_repo_files)} Files)", expanded=True):
+                st.dataframe(pd.DataFrame(drive_table), use_container_width=True, hide_index=True)
+                st.caption("🔒 *Default-deny access policy active: All files have metadata inspected, but contents remain unopened pending task justification.*")
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            # =================================================================
+            # STEP 4: SELECTIVE ACCESS DECISIONS & AUDIT LOG (LAYER 1)
+            # =================================================================
+            st.markdown("""
+            <div class="stage-box">
+                <div class="stage-title">
+                    <span class="stage-badge">STEP 4</span> Selective Access Decisions & Audit Log (Access Minimisation)
+                </div>
+            """, unsafe_allow_html=True)
+            st.caption("Task-aware access controller grants access strictly to task-required documents; sensitive documents (medical, banking, tax) remain unopened.")
+
+            if access_metrics:
+                acc_c1, acc_c2, acc_c3, acc_c4 = st.columns(4)
+                acc_c1.metric("Personal Drive Files", f"{access_metrics.get('total_repository_files', 0)}")
+                acc_c2.metric("Metadata Inspected Only", f"{access_metrics.get('inspected_metadata_files', 0)}")
+                acc_c3.metric("Authorized Opened", f"{access_metrics.get('accessed_files_count', 0)}")
+                acc_c4.metric("Access Reduction Ratio", f"{access_metrics.get('access_reduction_percentage', 0.0)}%")
+                st.caption(f"Default-deny access control: 0 sensitive documents (medical, banking, tax) opened. Total documents unopened: {access_metrics.get('unopened_files_count', 0)}.")
+
+            if access_log:
+                audit_rows = []
+                for a in access_log:
+                    audit_rows.append({
+                        "Document File": a["file_name"],
+                        "Category": a["category"],
+                        "Access Decision": "🟢 OPENED" if a["decision"] == "ACCESSED" else "🔒 NOT ACCESSED (PROTECTED)",
+                        "Policy Justification": a["justification"]
+                    })
+                st.dataframe(pd.DataFrame(audit_rows), use_container_width=True, hide_index=True)
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            # =================================================================
+            # STEP 5: ATTRIBUTE MATCHING
+            # =================================================================
+            st.markdown("""
+            <div class="stage-box">
+                <div class="stage-title">
+                    <span class="stage-badge">STEP 5</span> Requirement to User-Attribute Matching
+                </div>
+            """, unsafe_allow_html=True)
+            st.caption("Maps extracted task requirements to tokens extracted from opened documents and applicant profile attributes:")
+
             match_table_data = []
             for req_name, details in matched_data.get("mapping", {}).items():
                 val = details["value"] if details["value"] is not None else "MISSING / NULL"
@@ -340,10 +365,19 @@ def render_passport_view(retriever):
             if missing_reqs:
                 st.warning(f"⚠️ **Missing Mandatory Requirement(s)**: `{missing_reqs}`. Profile lacks statutory documentary proof.")
 
-            # -----------------------------------------------------------------
-            # C. Minimum Disclosure Metrics (Layer 2)
-            # -----------------------------------------------------------------
-            st.markdown("##### 📤 Layer 2: Minimum-Disclosure Plan & Metrics")
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            # =================================================================
+            # STEP 6: MINIMUM-DISCLOSURE PLAN (LAYER 2)
+            # =================================================================
+            st.markdown("""
+            <div class="stage-box">
+                <div class="stage-title">
+                    <span class="stage-badge">STEP 6</span> Minimum-Disclosure Plan & Metrics (Disclosure Minimisation)
+                </div>
+            """, unsafe_allow_html=True)
+            st.caption("Synthesizes minimal transmission payload, eliminating unneeded attributes (income, banking, medical, employment):")
+
             base_count = plan["total_user_attributes_count"]
             min_count = plan["disclosed_attributes_count"] if policy_res["approved"] else 0
             prevented_count = base_count - min_count
@@ -375,10 +409,24 @@ def render_passport_view(retriever):
                 st.markdown("**Quarantined Internal Document Fields (Never Transmitted):**")
                 st.caption(f"`{', '.join(plan.get('quarantined_document_fields', []))}`")
 
-            # -----------------------------------------------------------------
-            # D. Policy Validation
-            # -----------------------------------------------------------------
-            st.markdown("##### D. Deterministic Privacy Policy Decision")
+            st.markdown("**Proposed Disclosure Payload Preview:**")
+            if policy_res["approved"]:
+                st.json(plan["approved_payload"])
+            else:
+                st.warning("⚠️ No payload generated. Request failed deterministic policy verification.")
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            # =================================================================
+            # STEP 7: DETERMINISTIC POLICY VERIFICATION
+            # =================================================================
+            st.markdown("""
+            <div class="stage-box">
+                <div class="stage-title">
+                    <span class="stage-badge">STEP 7</span> Deterministic Privacy Policy Verification
+                </div>
+            """, unsafe_allow_html=True)
+
             if policy_res["approved"]:
                 st.markdown(f"""
                 <div class="card-passed">
@@ -398,24 +446,15 @@ def render_passport_view(retriever):
                 </div>
                 """, unsafe_allow_html=True)
 
-            # -----------------------------------------------------------------
-            # E. Proposed Payload
-            # -----------------------------------------------------------------
-            st.markdown("##### E. Proposed Disclosure Payload Preview")
-            if policy_res["approved"]:
-                st.json(plan["approved_payload"])
-            else:
-                st.warning("⚠️ No payload generated. Request failed deterministic policy verification.")
+            st.markdown("</div>", unsafe_allow_html=True)
 
-            st.markdown("---")
-
-            # -----------------------------------------------------------------
-            # STAGE 3: SUBMISSION AUTHORIZATION
-            # -----------------------------------------------------------------
+            # =================================================================
+            # STEP 8: REQUIRE USER APPROVAL (HUMAN GATING)
+            # =================================================================
             st.markdown("""
             <div class="stage-box">
                 <div class="stage-title">
-                    <span class="stage-badge">STAGE 3</span> Submission Authorization
+                    <span class="stage-badge">STEP 8</span> Human-in-the-Loop Approval Gating
                 </div>
             """, unsafe_allow_html=True)
 
@@ -426,7 +465,7 @@ def render_passport_view(retriever):
                 st.warning("⚠️ **Submission Disabled**: Settings modified. Re-run analysis to generate an up-to-date plan.")
             else:
                 if not st.session_state.passport_executed:
-                    st.info("ℹ️ Privacy review complete. Review the approved payload above and authorize dispatch to Mock Passport API.")
+                    st.info("ℹ️ Privacy review complete. Review the approved minimal payload above and authorize dispatch to Mock Passport API.")
                     submit_btn = st.button("🚀 Authorize & Submit to Mock Passport API", key="btn_passport_submit", type="primary", use_container_width=True)
                     if submit_btn:
                         try:
@@ -442,15 +481,15 @@ def render_passport_view(retriever):
 
             st.markdown("</div>", unsafe_allow_html=True)
 
-            # -----------------------------------------------------------------
-            # STAGE 4: SERVICE EXECUTION RESULT
-            # -----------------------------------------------------------------
+            # =================================================================
+            # STEP 9: DEMONSTRATE MOCK API SUBMISSION & RESULT
+            # =================================================================
             if st.session_state.passport_executed and st.session_state.passport_api_response:
                 api_res = st.session_state.passport_api_response
                 st.markdown("""
                 <div class="stage-box">
                     <div class="stage-title">
-                        <span class="stage-badge">STAGE 4</span> Mock Service Execution Result
+                        <span class="stage-badge">STEP 9</span> Mock Service Execution Result
                     </div>
                     <div class="card-passed">
                         <h4 style="margin-top:0;">Mock External Service Response</h4>
@@ -467,10 +506,10 @@ def render_passport_view(retriever):
                 st.markdown("</div>", unsafe_allow_html=True)
 
     # =========================================================================
-    # TAB 2: BENCHMARK EVALUATION (U001 - U010)
+    # TAB 2: STEP 10: EVALUATION RESULTS (10 SYNTHETIC PROFILES)
     # =========================================================================
     with tab_bench:
-        st.subheader("📊 Dual-Layer Privacy Benchmark (U001 - U010)")
+        st.subheader("📊 Step 10: Evaluation Results (10 Synthetic Profiles)")
         st.caption("Evaluates both Layer 1 (Access Minimisation) and Layer 2 (Disclosure Minimisation) across 10 synthetic test profiles.")
 
         if st.button("Run Full Passport Benchmark Suite", key="btn_run_pass_bench", type="secondary"):

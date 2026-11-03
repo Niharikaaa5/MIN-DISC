@@ -87,32 +87,30 @@ def main():
     """, unsafe_allow_html=True)
 
     # Navigation Menu
-    nav_options = [
-        "🏠 Dashboard",
-        "🛂 Passport Application"
-    ]
-
-    view_to_idx = {
-        "dashboard": 0,
-        "passport": 1
+    nav_labels = {
+        "dashboard": "🏠 Dashboard",
+        "passport": "🛂 Passport Application"
     }
-    current_idx = view_to_idx.get(st.session_state.active_view, 0)
+    label_to_view = {
+        "🏠 Dashboard": "dashboard",
+        "🛂 Passport Application": "passport"
+    }
+    nav_options = list(label_to_view.keys())
 
-    selected_nav = st.sidebar.radio(
+    # Ensure main_nav_radio reflects active_view
+    target_nav_label = nav_labels.get(st.session_state.active_view, "🏠 Dashboard")
+    if "main_nav_radio" not in st.session_state or st.session_state.main_nav_radio != target_nav_label:
+        st.session_state.main_nav_radio = target_nav_label
+
+    def on_nav_change():
+        st.session_state.active_view = label_to_view.get(st.session_state.main_nav_radio, "dashboard")
+
+    st.sidebar.radio(
         "Navigation Menu:",
         nav_options,
-        index=current_idx,
-        key="main_nav_radio"
+        key="main_nav_radio",
+        on_change=on_nav_change
     )
-
-    idx_to_view = {
-        0: "dashboard",
-        1: "passport"
-    }
-    selected_view = idx_to_view[nav_options.index(selected_nav)]
-    if selected_view != st.session_state.active_view:
-        st.session_state.active_view = selected_view
-        st.rerun()
 
     # Diagnostics Expander in Sidebar
     with st.sidebar.expander("⚙️ System Diagnostics", expanded=False):

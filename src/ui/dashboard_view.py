@@ -50,61 +50,6 @@ def render_dashboard_view():
 
     if st.button("Launch Passport Workflow", key="btn_launch_passport", use_container_width=True, type="primary"):
         st.session_state.active_view = "passport"
+        st.session_state.main_nav_radio = "🛂 Passport Application"
         st.rerun()
 
-    st.markdown("---")
-
-    # Workflow Architecture Overview
-    st.markdown("### End-to-End Privacy Architecture")
-    arch_col1, arch_col2 = st.columns([1, 1], gap="medium")
-
-    with arch_col1:
-        st.markdown("""
-        <div class="stage-box">
-            <div class="stage-title">
-                <span class="stage-badge">PIPELINE</span> Sequential Verification Stages
-            </div>
-            <ol style="font-size:0.88rem; color:#334155; line-height:1.6; margin-left: -1rem;">
-                <li><b>Isolated RAG Retrieval:</b> Query domain-specific FAISS vector stores to retrieve authoritative regulatory chunks from official Passport booklets.</li>
-                <li><b>Requirement Extraction:</b> Extract structured task requirements and determine exact documentary evidence conditions.</li>
-                <li><b>Attribute Matching:</b> Map available applicant attributes against requirements and classify into satisfied, failed, or missing.</li>
-                <li><b>Minimum-Disclosure Planning:</b> Synthesize minimal transmission payload; eliminate unneeded attributes (income, bank account, medical data); document disclosure justifications.</li>
-                <li><b>Deterministic Policy Engine:</b> Rigorous defense-in-depth policy verification (PASSED vs BLOCKED).</li>
-                <li><b>Human-in-the-Loop Gating:</b> Require explicit human authorization before external submission.</li>
-                <li><b>Simulated Mock Submission:</b> External tool API verifies zero unapproved attribute leakage and records submission.</li>
-            </ol>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with arch_col2:
-        st.markdown("""
-        <div class="stage-box">
-            <div class="stage-title">
-                <span class="stage-badge">BENCHMARKS</span> Empirical Privacy Evaluation
-            </div>
-            <p style="font-size:0.88rem; color:#475569; line-height:1.5;">
-                MIN-DISC evaluates disclosure reduction across standardized synthetic datasets (U001 - U010):
-            </p>
-            <table class="kv-table">
-                <tr>
-                    <td class="kv-key">Passport Workflow (10 Profiles)</td>
-                    <td class="kv-val"><b>86.3%</b> average attribute disclosure reduction</td>
-                </tr>
-                <tr>
-                    <td class="kv-key">Policy Enforcement Accuracy</td>
-                    <td class="kv-val"><b>100%</b> accurate (8 Passed, 2 Blocked correctly)</td>
-                </tr>
-                <tr>
-                    <td class="kv-key">Unnecessary Data Leakage Prevention</td>
-                    <td class="kv-val">Income, bank details, medical records <b>100% isolated</b></td>
-                </tr>
-                <tr>
-                    <td class="kv-key">Human-in-the-Loop Gating</td>
-                    <td class="kv-val">0 external API calls without explicit user approval</td>
-                </tr>
-            </table>
-            <div style="margin-top: 1rem;">
-                <span style="font-size:0.84rem; color:#64748B;">Explore full empirical evaluation in the <b>Benchmark Evaluation</b> tab within the Passport workflow.</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
