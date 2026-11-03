@@ -49,7 +49,6 @@ def render_dashboard_view():
     """, unsafe_allow_html=True)
 
     if st.button("Launch Passport Workflow", key="btn_launch_passport", use_container_width=True, type="primary"):
-        st.session_state.active_view = "passport"
-        st.session_state.main_nav_radio = "🛂 Passport Application"
+        st.session_state.pending_navigation = "passport"
         st.rerun()
 

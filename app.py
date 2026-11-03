@@ -59,6 +59,8 @@ def init_app_state():
     """Initializes top-level application navigation state."""
     if "active_view" not in st.session_state:
         st.session_state.active_view = "dashboard"
+    if "pending_navigation" not in st.session_state:
+        st.session_state.pending_navigation = None
 
 
 def main():
@@ -97,20 +99,31 @@ def main():
     }
     nav_options = list(label_to_view.keys())
 
-    # Ensure main_nav_radio reflects active_view
-    target_nav_label = nav_labels.get(st.session_state.active_view, "🏠 Dashboard")
-    if "main_nav_radio" not in st.session_state or st.session_state.main_nav_radio != target_nav_label:
-        st.session_state.main_nav_radio = target_nav_label
+    # 1. Process pending navigation request BEFORE widget instantiation
+    if st.session_state.get("pending_navigation"):
+        target = st.session_state.pending_navigation
+        st.session_state.pending_navigation = None
+        if target in nav_labels:
+            st.session_state.active_view = target
+            st.session_state.main_nav_radio = nav_labels[target]
+        elif target in label_to_view:
+            st.session_state.active_view = label_to_view[target]
+            st.session_state.main_nav_radio = target
+
+    # Ensure main_nav_radio is initialized prior to widget instantiation
+    if "main_nav_radio" not in st.session_state:
+        st.session_state.main_nav_radio = nav_labels.get(st.session_state.active_view, "🏠 Dashboard")
 
     def on_nav_change():
         st.session_state.active_view = label_to_view.get(st.session_state.main_nav_radio, "dashboard")
 
-    st.sidebar.radio(
+    selected_nav = st.sidebar.radio(
         "Navigation Menu:",
         nav_options,
         key="main_nav_radio",
         on_change=on_nav_change
     )
+    st.session_state.active_view = label_to_view.get(selected_nav, "dashboard")
 
     # Diagnostics Expander in Sidebar
     with st.sidebar.expander("⚙️ System Diagnostics", expanded=False):
