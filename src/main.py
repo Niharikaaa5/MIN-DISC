@@ -99,13 +99,18 @@ def demonstrate_single_user_flow(user_id: str = "U001", requires_non_ecr: bool =
         requires_non_ecr=requires_non_ecr
     )
     access_metrics = access_result["metrics"]
+    sensitive_cats = RepositoryAccessController.FORBIDDEN_CATEGORIES
+    single_sensitive_opened = sum(
+        1 for entry in access_result.get("access_decision_log", [])
+        if entry.get("category") in sensitive_cats and (entry.get("opened") or entry.get("decision") == "ACCESSED")
+    )
 
     print(f"--- STAGE 4A: PERSONAL DRIVE REPOSITORY ACCESS (User: {user_id}) ---")
     print(f"Total Repository Documents:     {access_metrics['total_repository_files']}")
     print(f"Inspected Metadata Only:        {access_metrics['inspected_metadata_files']}")
     print(f"Authorized Documents Opened:    {access_metrics['accessed_files_count']}")
     print(f"Total Documents Unopened:       {access_metrics['unopened_files_count']}")
-    print(f"Sensitive Documents Opened:     0 (Banking, Tax, Medical strictly protected)")
+    print(f"Sensitive Documents Opened:     {single_sensitive_opened} (Banking, Tax, Medical strictly protected)")
     print(f"Access Minimisation Ratio:      {access_metrics['access_reduction_percentage']}% unopened")
     print("\nRepository Access Decision Audit Log:")
     for entry in access_result["access_decision_log"]:
@@ -192,7 +197,7 @@ def demonstrate_single_user_flow(user_id: str = "U001", requires_non_ecr: bool =
     print(f"    * Documents Inspected (Metadata Only):    {access_metrics['inspected_metadata_files']}")
     print(f"    * Authorized Documents Opened:            {access_metrics['accessed_files_count']}")
     print(f"    * Total Documents Kept Unopened:          {access_metrics['unopened_files_count']}")
-    print(f"    * Sensitive Documents Successfully Opened: 0 (Banking, Tax, Medical protected)")
+    print(f"    * Sensitive Documents Successfully Opened: {single_sensitive_opened} (Banking, Tax, Medical protected)")
     print(f"    ==> ACCESS REDUCTION RATIO:               {access_metrics['access_reduction_percentage']}%")
     print("-" * 80)
     print(f"  Layer 2: Minimum-Disclosure Planning (External Payload)")
@@ -253,14 +258,24 @@ def run_full_evaluation_benchmark():
         attrs_str = f"{m_disc}/{b_disc}"
         print(f" {uid:<8} | {name:<20} | {files_str:<15} | {acc_red:>7.1f}%   | {attrs_str:<16} | {disc_red:>7.1f}%   | {status:<10}")
 
+    sensitive_cats = RepositoryAccessController.FORBIDDEN_CATEGORIES
+    total_sensitive_docs = 0
+    sensitive_docs_opened = 0
+    for res in eval_results:
+        for entry in res.get("access_decision_log", []):
+            if entry.get("category") in sensitive_cats:
+                total_sensitive_docs += 1
+                if entry.get("opened") or entry.get("decision") == "ACCESSED":
+                    sensitive_docs_opened += 1
+
     print("=" * 105)
     print(f" DUAL-LAYER PRIVACY BENCHMARK SUMMARY (10 Synthetic Applicants):")
     avg_acc_reduction = round((1 - (total_accessed_files / total_repo_files)) * 100, 1) if total_repo_files > 0 else 0
     avg_disc_reduction = round((1 - (total_min_disc_attrs / total_baseline_attrs)) * 100, 1) if total_baseline_attrs > 0 else 0
     print(f"  [Layer 1: Access Minimisation]")
     print(f"   * Total User Drive Documents:              {total_repo_files}")
-    print(f"   * Total Sensitive Documents (Bank/Tax/Med): 30")
-    print(f"   * Total Sensitive Documents Opened:         0")
+    print(f"   * Total Sensitive Documents (Bank/Tax/Med): {total_sensitive_docs}")
+    print(f"   * Total Sensitive Documents Opened:         {sensitive_docs_opened}")
     print(f"   * Total Authorized Documents Opened:        {total_accessed_files}")
     print(f"   * Total Documents Kept Unopened:            {total_repo_files - total_accessed_files}")
     print(f"   * Average Document Access Reduction:        {avg_acc_reduction}%")
@@ -268,7 +283,7 @@ def run_full_evaluation_benchmark():
     print(f"   * Total Baseline Profile Disclosures:       {total_baseline_attrs}")
     print(f"   * Total MIN-DISC Tool Disclosures:          {total_min_disc_attrs}")
     print(f"   * Baseline Attributes Not Disclosed:        {total_prevented_attrs} ({total_prevented_attrs} baseline attributes not disclosed by MIN-DISC)")
-    print(f"   * Average Tool Disclosure Reduction:        {avg_disc_reduction}%")
+    print(f"   * Overall Attribute Disclosure Reduction:   {avg_disc_reduction}%")
     print("=" * 105 + "\n")
 
 

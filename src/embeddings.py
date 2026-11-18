@@ -37,6 +37,10 @@ class EmbeddingModel:
                 try:
                     with open(self.tfidf_model_path, "rb") as f:
                         self.tfidf_vectorizer = pickle.load(f)
+                    if hasattr(self.tfidf_vectorizer, "_tfidf"):
+                        tfidf = self.tfidf_vectorizer._tfidf
+                        if hasattr(tfidf, "_idf_diag") and not hasattr(tfidf, "idf_"):
+                            tfidf.idf_ = tfidf._idf_diag.diagonal()
                     print(f"[*] Loaded fitted TF-IDF vectorizer from {self.tfidf_model_path}.")
                 except Exception as e:
                     print(f"[NOTE] Could not load pre-fitted TF-IDF vectorizer: {e}")
@@ -55,6 +59,10 @@ class EmbeddingModel:
                     try:
                         with open(self.tfidf_model_path, "rb") as f:
                             self.tfidf_vectorizer = pickle.load(f)
+                        if hasattr(self.tfidf_vectorizer, "_tfidf"):
+                            tfidf = self.tfidf_vectorizer._tfidf
+                            if hasattr(tfidf, "_idf_diag") and not hasattr(tfidf, "idf_"):
+                                tfidf.idf_ = tfidf._idf_diag.diagonal()
                         print(f"[*] Loaded fitted TF-IDF vectorizer from {self.tfidf_model_path}.")
                     except Exception:
                         pass

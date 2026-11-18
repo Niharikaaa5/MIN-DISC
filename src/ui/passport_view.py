@@ -320,7 +320,12 @@ def render_passport_view(retriever):
                 acc_c2.metric("Metadata Inspected Only", f"{access_metrics.get('inspected_metadata_files', 0)}")
                 acc_c3.metric("Authorized Opened", f"{access_metrics.get('accessed_files_count', 0)}")
                 acc_c4.metric("Access Reduction Ratio", f"{access_metrics.get('access_reduction_percentage', 0.0)}%")
-                st.caption(f"Default-deny access control: 0 sensitive documents (medical, banking, tax) opened. Total documents unopened: {access_metrics.get('unopened_files_count', 0)}.")
+                sensitive_opened_single = sum(
+                    1 for a in access_log
+                    if a.get("category") in RepositoryAccessController.FORBIDDEN_CATEGORIES
+                    and (a.get("opened") or a.get("decision") == "ACCESSED")
+                )
+                st.caption(f"Default-deny access control: {sensitive_opened_single} sensitive documents (medical, banking, tax) opened. Total documents unopened: {access_metrics.get('unopened_files_count', 0)}.")
 
             if access_log:
                 audit_rows = []
@@ -556,22 +561,32 @@ def render_passport_view(retriever):
                 avg_acc_reduction = round((1 - (total_accessed_files / total_repo_files)) * 100, 1) if total_repo_files > 0 else 0
                 avg_disc_reduction = round((1 - (total_min / total_baseline)) * 100, 1) if total_baseline > 0 else 0
 
+                total_sensitive_docs = 0
+                total_sensitive_opened = 0
+                for r in eval_results:
+                    for a in r.get("access_decision_log", []):
+                        if a.get("category") in RepositoryAccessController.FORBIDDEN_CATEGORIES:
+                            total_sensitive_docs += 1
+                            if a.get("opened") or a.get("decision") == "ACCESSED":
+                                total_sensitive_opened += 1
+                total_unopened_files = total_repo_files - total_accessed_files
+
                 st.markdown("**Layer 1: Task-Aware Access Minimisation**")
                 bm1, bm2, bm3, bm4 = st.columns(4)
                 bm1.metric("Total Drive Files", total_repo_files)
                 bm2.metric("Total Files Opened", total_accessed_files)
-                bm3.metric("Total Files Unopened", total_repo_files - total_accessed_files)
+                bm3.metric("Total Files Unopened", total_unopened_files)
                 bm4.metric("Average Access Reduction", f"{avg_acc_reduction}%")
 
-                st.caption(f"Across 70 documents, 30 are sensitive (banking, tax, medical) and 0 sensitive documents were opened. 52 total documents were kept unopened.")
+                st.caption(f"Across {total_repo_files} documents, {total_sensitive_docs} are sensitive (banking, tax, medical) and {total_sensitive_opened} sensitive documents were opened. {total_unopened_files} total documents were kept unopened.")
 
                 st.markdown("**Layer 2: Minimum-Disclosure Planning**")
                 dm1, dm2, dm3, dm4 = st.columns(4)
                 dm1.metric("Baseline Attributes Disclosed", total_baseline)
                 dm2.metric("MIN-DISC Attributes Disclosed", total_min)
                 dm3.metric("Baseline Attributes Not Disclosed", total_prevented)
-                dm4.metric("Average Disclosure Reduction", f"{avg_disc_reduction}%")
+                dm4.metric("Overall Attribute Disclosure Reduction", f"{avg_disc_reduction}%")
 
-                st.caption(f"Across the 10 synthetic evaluation cases, MIN-DISC kept {avg_acc_reduction}% of personal drive files unopened and {total_prevented} baseline attributes were not disclosed by MIN-DISC (yielding an average {avg_disc_reduction}% disclosure reduction).")
+                st.caption(f"Across the 10 synthetic evaluation cases, MIN-DISC kept {avg_acc_reduction}% of personal drive files unopened and {total_prevented} baseline attributes were not disclosed by MIN-DISC (yielding an overall {avg_disc_reduction}% attribute disclosure reduction).")
         else:
             st.info("ℹ️ Click **'Run Full Passport Benchmark Suite'** to compute metrics across U001 - U010.")
